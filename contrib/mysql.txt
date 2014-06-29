@@ -21,7 +21,7 @@ CREATE TABLE game (
   SeasonID int(11) NOT NULL default '0',
   Notes text,
   PRIMARY KEY  (ID)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 #
 # Dumping data for table 'game'
@@ -42,7 +42,7 @@ CREATE TABLE hitorout (
   ID int(11) NOT NULL auto_increment,
   Description char(50) NOT NULL default '',
   PRIMARY KEY  (ID)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 #
 # Dumping data for table 'hitorout'
@@ -66,7 +66,7 @@ CREATE TABLE player (
   SeasonID int(11) NOT NULL default '0',
   UNIQUE KEY ID (ID,SeasonID),
   KEY SeasonID (SeasonID)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 #
 # Dumping data for table 'player'
@@ -90,7 +90,7 @@ CREATE TABLE plays (
   DateAdded datetime NOT NULL default '0000-00-00 00:00:00',
   SeasonID int(11) NOT NULL default '0',
   PRIMARY KEY  (ID)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 #
 # Dumping data for table 'plays'
@@ -156,7 +156,7 @@ CREATE TABLE season (
   Description char(50) NOT NULL default '',
   DefaultSeason int(1) NOT NULL default '0',
   PRIMARY KEY  (ID)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 #
 # Dumping data for table 'season'
@@ -173,7 +173,7 @@ CREATE TABLE type (
   Description char(50) NOT NULL default '',
   HitOrOutID int(11) NOT NULL default '0',
   PRIMARY KEY  (ID)
-) TYPE=MyISAM;
+) ENGINE=MyISAM;
 
 #
 # Dumping data for table 'type'

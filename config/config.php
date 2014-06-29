@@ -9,7 +9,8 @@
   // The directory that SoftballStats is available on your web server
   // Be sure to prepend a / character, and don't append a / character
   // i.e http://www.your-domain.com<$stat_dir>
-  $stat_dir = '/softballstats';
+  //leave . for relative
+  $stat_dir = '.';
 
   // Use built in authorization for Admin pages.
   // !! If you set this to '0', be sure to setup authorization for /admin with your web server or set $show_admin_links to '0' !!
@@ -33,26 +34,16 @@
   $sql_db_name = 'softballstats';
 
   // User that the scripts will use to access the DB
-  $sql_username = 'softballuser';
+  $sql_username = 'root';
 
   // $sql_username's password
-  $sql_pass = 'sqlpass';
+  $sql_pass = 'root';
 
   // MySQL server
   $sql_server = 'localhost';
 
   // MySQL server port
   $sql_server_port = '3306';
-
-// HTML Stuff
-  $html_background_image=$stat_dir.'/gifs/back2.gif';
-  $html_bgcolor = '#FFE67C';
-  $html_text_color = '#960';
-  $html_link_color = '#630';
-  $html_vlink_color = '#999';
-  $html_alink_color = '#300';
-  $html_high_score_color = '#C30';
-  $html_row_highlight_color = '#FFE67C';
 
 // Demo Mode (read-only Admin pages)
   $demo_mode = '0';

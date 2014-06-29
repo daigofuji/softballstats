@@ -12,25 +12,26 @@ softball/baseball seasons.  SoftballStats also compiles statistics for each
 player.
 
 There 2 groups of scripts:
-1) Stat scripts - These scripts display stats, player info, and game info
+1. Stat scripts - These scripts display stats, player info, and game info
    for the current season.
-2) Admin scripts - this is where the Stat Master enters the season info,
+2. Admin scripts - this is where the Stat Master enters the season info,
    game info, player info, and every play made in all games.
 
 
 Using SoftballStats
 -------------------
-1)  Install SoftballStats.  See INSTALL.
-2)  Use the Season Admin page to create a new season.  Make sure you set
+1.  Install SoftballStats.  See INSTALL.
+2.  Use the Season Admin page to create a new season.  Make sure you set
     this season to Current.
-3)  Use the Game Admin page to add in all the games for your season.  Even
+3.  Use the Game Admin page to add in all the games for your season.  Even
     the ones you have not played yet.  Your team mates will be able to use
     the Game Info page to see the schedule.
-4)  Use the Player Admin page to add in all your players.
-5)  After you start your season, you should have a sheet filled out by your
+4.  Use the Player Admin page to add in all your players.
+5.  After you start your season, you should have a sheet filled out by your
     'Score Whore' ;) with all the plays.  Take each play, in order if
     possible, and enter it using the Play Admin page.
     SoftballStats tracks the following mandatory plays:
+
       Double
       Double Play
       Fielders Choice
@@ -46,8 +47,10 @@ Using SoftballStats
       Strike Out
       Triple
       Walk
+
     And the following optional plays:
-      Nice Fucking Play
+
+      Nice F*ing Play
       Error (1st Base)
       Error (2nd Base)
       Error (3rd Base)
@@ -58,9 +61,10 @@ Using SoftballStats
       Error (Right Center Field)
       Error (Right Field)
       Error (Short Stop)
-6)  Take a look at all the Stat pages to see info/stats based on your
+
+6.  Take a look at all the Stat pages to see info/stats based on your
     season.
-7)  Shoot out an email to your friends/team mates with a link to
+7.  Shoot out an email to your friends/team mates with a link to
     https://<your server>/softballstats/
 
 [Hint] Make sure to fill in all the required fields marked w/ a '*' on all
