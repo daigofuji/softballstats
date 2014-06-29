@@ -1,0 +1,36 @@
+Version 1.0
+-----------
+  - Initial release, everything
+
+Version 1.1
+-----------
+  - Fixed links in 2 index.html pages
+  - Updated 401 error message
+  - Added Play-By-Play report
+  - Fixed up code to eliminate Notice errors on servers with
+    "error_reporting = E_ALL" in php.ini
+  - General HTML fixes
+  - Added support for forefits in Game Admin and Game Info
+  - Fixed INSTALL doc
+  - Added built-in support for demo mode
+  - Fixed header.php to use config.php's HTML settings
+  - Made Admin pages more user friendly and consistent
+
+Version 1.2
+-----------
+  - Fixed minor bug in plays.php for error reporting
+  - Added a feature to track and display game "Notes"
+  - Added support for changing seasons on all non-admin pages
+  - Fixed up player stat page to not highlight the best score
+    when only viewing a single player's stats
+
+
+Version 1.2.1
+-----------
+  - Added CSS softballstats.css
+  - Cleaned up HTML (all tags to lowercase, no font tags etc.) on all files
+  - Files are validated xhtml1.0 transitional
+  - Added lots of code in header.php
+  - A new SoftballStats logo
+  - Added feature for disabling built in authorization
+  - Renamed "Nice Fucking Play" to "Nice Play".  Cleaned up the language for the masses :)

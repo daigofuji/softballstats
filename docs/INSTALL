@@ -1,0 +1,266 @@
+SoftballStats INSTALL
+---------------------
+
+
+CONTENTS
+--------
+0) Requirements
+1) Quick Install Instructions
+2) Install SoftballStats (Unix platforms)
+3) Install SoftballStats (Win32 platforms)
+4) Configure SoftballStats
+5) Start using SoftballStats
+6) Upgrading
+
+
+0) Requirements
+---------------
+  To run SoftballStats you will need:
+    - A *nix or Win32 machine (i.e. Linux, Solaris, Windows XP, etc.) - To run s/w
+    - Apache 1.3.x+ (http://httpd.apache.org/) - Web server
+    - PHP 4.0.4+ (http://www.php.net/) - Script interpreter
+    - MySQL 3.23.x (http://www.mysql.org/) - Backend database
+  You should also have:
+    - A package that does SSL/TLS encryption for Apache (i.e. mod_ssl).
+      This is important because softballstats sends passwords over the network
+      to authenticate the stat admin to the Admin pages.
+
+
+1) Quick Install Instructions
+-----------------------------
+  - Install MySQL
+  - Install PHP 4.0.4+ w/ Apache & MySQL support
+  - Install Apache w/ PHP support and optionally SSH/TLS support
+  - Unpack SoftballStats in your htdocs directory
+  - Install SoftballStats database into MySQL 
+  - Configure SoftballStats by editing softballstats/config.php
+
+
+2) Install SoftballStats (Unix platforms)
+-----------------------------------------
+
+  Install MySQL
+  -------------
+
+    To install from source:
+    -----------------------
+      - Download the MySQL source to your source directory (i.e. /usr/local/src)
+      - Unpack, configure, compile, and install MySQL:
+          > groupadd mysql
+          > useradd -g mysql mysql
+          > gunzip mysql-3.23.x.tar.gz
+          > cd /usr/local/src
+          > tar xvf mysql-3.23.x.tar
+          > cd mysql-3.23.x
+          > ./configure \
+            "--prefix=/usr/local/mysql"
+          > make
+          > make install
+          > scripts/mysql_install_db
+          > chown -R root  /usr/local/mysql
+          > chown -R mysql /usr/local/mysql/var
+          > chgrp -R mysql /usr/local/mysql
+          > cp support-files/my-medium.cnf /etc/my.cnf
+      - Start MySQL
+          > /usr/local/mysql/bin/safe_mysqld --user=mysql &
+      - Set MySQL root password
+          > /usr/local/mysql/bin/mysqladmin -u root password '<PASSWORD>'
+      - Setup MySQL to start when machine is rebooted
+        (modify this example to work on your platform):
+          > cp support-files/mysql.server /etc/rc.d/init.d/mysql
+          > cd /etc/rc.d/rc3.d
+          > ln -s ../init.d/mysql S50mysql
+
+    To install from RPM:
+    --------------------
+      - Download and install 3 MySQL packages:
+          MySQL-3.23.x
+          MySQL-clients-3.23.x
+          MySQL-devel-3.23.x
+      - Set MySQL root password
+          > mysqladmin -u root password '<PASSWORD>'
+
+  Install SSL/TLS package for Apache [Optional]
+  ---------------------------------------------
+    - Pick and install a package to do SSL/TLS for your server,
+      I like mod_ssl (http://www.modssl.org/)
+
+  Install PHP
+  -----------
+    - Download the Apache source to your source directory (i.e. /usr/local/src)
+    - Unpack Apache:
+        > cd /usr/local/src
+        > gunzip apache-1.3.x.tar.gz
+        > tar xvf apache-1.3.x.tar.gz
+    - Configure Apache:
+        > cd apache-1.3.x
+        > ./configure \
+          "--with-layout=Apache" \
+          "--activate-module=src/modules/php4/libphp4.a" \
+          "--prefix=/usr/local/apache" 
+    - Download the PHP source to your source directory (i.e. /usr/local/src)
+    - Unpack PHP:
+        > cd /usr/local/src
+        > gunzip php-4.x.x.tar.gz
+        > tar xvf php-4.x.x.tar
+        > cd php-4.x.x
+    - If you installed MySQL from source, configure PHP:
+        > ./configure \
+          "--with-mysql=/usr/local/mysql" \
+          "--with-apache=../apache_1.3.x"
+    - If you installed MySQL from source, configure PHP:
+        > ./configure \
+          "--with-mysql=/usr" \
+          "--with-apache=../apache_1.3.x"
+    - Compile & install PHP:
+        > make
+        > make install
+
+  Install Apache
+  --------------
+    - Compile & install Apache:
+        > cd /usr/local/src
+        > cd apache-1.3.x
+        > ./configure \
+          "--with-layout=Apache" \
+          "--activate-module=src/modules/php4/libphp4.a" \
+          "--prefix=/usr/local/apache" 
+        > make
+        > make install
+    - Setup Apache to start when machine is rebooted:
+      (modify this example to work on your platform):
+        create a startup script at /etc/rc.d/init.d/apache
+        > chmod 755 /etc/rc.d/init.d/apache
+        > cd /etc/rc.d/rc3.d
+        > ln -s ../init.d/apache S55apache
+      [Note] - you will probably need to modify the arguments to the configure
+               script if you plan on building Apache w/ SSL/TLS support.
+
+  Configure Apache
+  ----------------
+    - Edit /usr/local/apache/httpd.conf.  Setup the server correctly.
+    - If you installed SSL/TLS for Apache setup Apache to force encryption 
+        on /softballstats 
+    - Make sure you have these 2 lines in your httpd.conf:
+        AddType application/x-httpd-php3 .php3
+        AddType application/x-httpd-php .php
+    - Edit the DirectoryIndex line in httpd.conf to read:
+        DirectoryIndex index.php index.html
+    - Start Apache:
+        > /etc/init.d/apache start
+
+  Unpack SoftballStats
+  --------------------
+  - Download the source to your DocumentRoot directory
+    (i.e. /usr/local/apache/htdocs)
+  - Unpack SoftballStats:
+      > cd /usr/local/apache/htdocs
+      > gunzip softballstats-1.1.tar.gz
+      > tar xvf softballstats-1.1.tar
+      > mv softballstats-1.1 softballstats
+      > chown -R <APACHE USER>:<APACHE GROUP> softballstats
+      > chmod 644 `find ./softballstats -name '*.php'`
+      > chmod 600 softballstats/config/config.php
+
+  Create MySQL user and fill database
+  -----------------------------------
+    - Create softball database:
+        > /usr/local/mysql/bin/mysql -u root -p
+        mysql> CREATE DATABASE softballstats;
+    - Grant permissions and create MySQL user and password:
+        mysql> GRANT SELECT, INSERT, UPDATE, DELETE ON softballstats.* TO softballuser@localhost;
+        mysql> SET PASSWORD FOR softballuser@localhost = PASSWORD('<SQL PASSWORD>');
+        mysql> exit
+    - Fill database:
+        > /usr/local/mysql/bin/mysql -u root -p softballstats < ./contrib/mysql.txt
+
+
+3) Install SoftballStats (Win32 platforms)
+------------------------------------------
+  Install MySQL
+  -------------
+    - Download and install the MySQL package
+    - Set MySQL root password (at a DOS prompt)
+        C:\> cd mysql\bin
+        C:\> mysqladmin -u root password '<PASSWORD>'
+        C:\> exit
+
+  Install PHP
+  -----------
+    - Download and install PHP.  Download and install the PHP zip package NOT the installer.
+
+  Install Apache
+  --------------
+    - Download and install Apache
+      The downloads can usually be found under binaries/win32
+
+  Configure Apache
+  ----------------
+    - Edit "C:\Program Files\Apache Group\Apache\httpd.conf" with notepad.
+      Setup the server correctly.
+    - Make sure you have these 2 lines in your httpd.conf:
+        AddType application/x-httpd-php3 .php3
+        AddType application/x-httpd-php .php
+    - Edit the DirectoryIndex line in httpd.conf to read:
+        DirectoryIndex index.php index.html
+    - Start/Restart Apache using the Services applet
+
+  Unpack SoftballStats
+  --------------------
+  - Download the source to your DocumentRoot directory
+    (i.e. "C:\Program Files\Apache Group\Apache\htdocs")
+  - Extract SoftballStats into your DocumentRoot directory using WinZip (http://winzip.com)
+  - Rename the directory softballstats-1.1 to softballstats
+
+  Create MySQL user and fill database
+  -----------------------------------
+    - Create softball database (from a DOS prompt):
+        C:\> cd mysql\bin
+        C:\> mysql -u root -p
+        mysql> CREATE DATABASE softballstats;
+    - Grant permissions and create MySQL user and password:
+        mysql> GRANT SELECT, INSERT, UPDATE, DELETE ON softballstats.* TO softballuser@localhost;
+        mysql> SET PASSWORD FOR softballuser@localhost = PASSWORD('<SQL PASSWORD>');
+    - Fill database:
+      - Open "C:\Program Files\Apache Group\Apache\htdocs\softballstats\contrib\mysql.txt" with notepad
+      - Select and copy all the text to the clipboard
+      - Paste the clipboard into the DOS window that is logged into mysql
+        mysql> exit
+        C:\> exit
+
+
+4) Configure SoftballStats
+--------------------------
+  - Edit softballstats/config/config.php, and set the appropriate values.
+    The config options are documented in the file. 
+
+
+5) Start using SoftballStats
+----------------------------
+  - Point your web browser at http://<YOUR SERVER>/softballstats/
+
+
+6) Upgrading
+------------
+  - The database structure changed in 1.2.  To update your pre-1.2 database:
+    > /usr/local/mysql/bin/mysql -u root -p softballstats
+    mysql> alter table game add Notes text default NULL;
+  - Backup your old softballstats directory and unpack the new scripts:
+      Unix:
+        - Download the source to your DocumentRoot directory
+          (i.e. /usr/local/apache/htdocs)
+        > cd /usr/local/apache/htdocs
+        > mv softballstats softballstats.bak
+        > gunzip softballstats-1.1.tar.gz
+        > tar xvf softballstats-1.1.tar
+        > mv softballstats-1.1 softballstats
+        > chown -R <APACHE USER>:<APACHE GROUP> softballstats
+        > chmod 644 `find ./softballstats -name '*.php'`
+        > chmod 600 softballstats/config/config.php
+      Win32:
+        - Download the source to your DocumentRoot directory
+          (i.e. "C:\Program Files\Apache Group\Apache\htdocs")
+	- Rename the directory softballstats to softballstats.bak
+        - Extract SoftballStats into your DocumentRoot directory using WinZip (http://winzip.com)
+	- Rename the directory softballstats-1.1 to softballstats
+  - Edit new softballstats/config/config.php, and set the appropriate values.
