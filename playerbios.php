@@ -11,8 +11,9 @@ $season_name = $arr['1'];
 $TITLE=$team_name.' Player Bios Report - '.$season_name;
 require('./config/header.php');
 ?>
-<h1><?=$TITLE;?></h1>
-<hr />
+<h1><?php echo $TITLE; ?></h1>
+<hr>
+
 <?php
 if (isset($_GET['ID'])) {
   if (!is_numeric($_GET['ID'])) {
@@ -22,25 +23,30 @@ if (isset($_GET['ID'])) {
   }
 }
 ?>
-<ul class="hint">
-<li><strong>[Hint]</strong> Click the player number to see that player's stats.</li>
-<li><strong>[Hint]</strong> Click the player name to send that player an email.</li>
+
+<ul class="hint no-bullet">
+  <li><strong>[Hint]</strong> Click the player number to see that player's stats.</li>
+  <li><strong>[Hint]</strong> Click the player name to send that player an email.</li>
 </ul>
-<hr />
+
+<hr>
+
 <form name="bios" method="post">
+
 Switch Season:
+
 <select name="cboSeason" size="1" onchange="document.bios.submit()">
 <?php
-$recSeason = mysql_query('SELECT * FROM season ORDER BY ID') ;
+$recSeason = $pdo->query('SELECT * FROM season ORDER BY ID');
 if ($recSeason) {
-  while ($rowSeason = mysql_fetch_assoc($recSeason)) {
+  while ($rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC)) {
     if ((isset($_POST['cboSeason']) && $_POST['cboSeason'] == $rowSeason['ID']) || $rowSeason['DefaultSeason']) {
       print '          <option selected';
     } else {
       print '          <option';
     }
 ?>
- VALUE="<?=$rowSeason['ID']?>"><?=stripslashes($rowSeason['Description'])?></option>
+ VALUE="<?php echo $rowSeason['ID'] ?>"><?php echo stripslashes($rowSeason['Description']) ?></option>
 <?php
   }
 }
@@ -48,22 +54,21 @@ if ($recSeason) {
 </select>
 </form>
 <p>
-<table width="100%" border="0">
+<table border="0" class="small-12">
   <tr>
-    <th width="5%">Number</th>
-    <th width="25%">Player Name</th>
-    <th width="70%">Bio</th>
+    <th>Number</th>
+    <th>Player Name</th>
+    <th>Bio</th>
   </tr>
 <?php
 if (!isset($_GET['ID'])) {
-  $recPlayer=mysql_query('SELECT * FROM player WHERE SeasonID = '.$season_id.' ORDER BY LastName, FirstName') ;
+  $recPlayer=$pdo->query('SELECT * FROM player WHERE SeasonID = '.$season_id.' ORDER BY LastName, FirstName');
 } else {
-  $recPlayer=mysql_query('SELECT * FROM player WHERE ID = '.addslashes($_GET['ID']).' AND SeasonID = '
-                         .$season_id.' ORDER BY LastName, FirstName') ;
+  $recPlayer=$pdo->query('SELECT * FROM player WHERE ID = '.addslashes($_GET['ID']).' AND SeasonID = '.$season_id.' ORDER BY LastName, FirstName');
 }
 
 $i = 0;
-while($rowPlayer=mysql_fetch_assoc($recPlayer)) {
+while($rowPlayer = $recPlayer->fetch(PDO::FETCH_ASSOC)) {
   if ($rowPlayer['Bio'] == NULL) {
     $bio = 'No Bio';
   } else {
@@ -76,15 +81,15 @@ while($rowPlayer=mysql_fetch_assoc($recPlayer)) {
   }
   $i++;
 ?>
-   <td <?=$tdbg?> valign="top"><strong><a href="playerstats.php?ID=<?=$rowPlayer['ID']?>"><?= $rowPlayer['ID'] ?></a></strong></td>
+   <td <?php echo $tdbg ?> valign="top"><strong><a href="playerstats.php?ID=<?php echo $rowPlayer['ID']?>"><?php echo $rowPlayer['ID'] ?></a></strong></td>
 <?php if ($rowPlayer['EMail']  == '') { ?>
-    <td<?=$tdbg?> valign="top"><?=stripslashes($rowPlayer['LastName'])?>,
-      <?=stripslashes($rowPlayer['FirstName']) ?></td>
+    <td<?php echo $tdbg ?> valign="top"><?php echo stripslashes($rowPlayer['LastName'])?>,
+      <?php echo stripslashes($rowPlayer['FirstName']) ?></td>
 <?php } else { ?>
-    <td<?=$tdbg?> valign="top"><a href="mailto:<?= stripslashes($rowPlayer['EMail']) ?>">
-      <?=stripslashes($rowPlayer['LastName'])?>, <?=stripslashes($rowPlayer['FirstName']) ?></a></td>
+    <td<?php echo $tdbg ?> valign="top"><a href="mailto:<?php echo stripslashes($rowPlayer['EMail']) ?>">
+      <?php echo stripslashes($rowPlayer['LastName'])?>, <?php echo stripslashes($rowPlayer['FirstName']) ?></a></td>
 <?php } ?>
-    <td<?=$tdbg?> valign="top"><?=$bio?></td>
+    <td<?php echo $tdbg ?> valign="top"><?php echo $bio ?></td>
   </tr>
 <?php
 }

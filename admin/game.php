@@ -16,28 +16,28 @@ if (!isset($HTTP_SERVER_VARS['PHP_AUTH_PW']) || !isset($HTTP_SERVER_VARS['PHP_AU
 require('../config/header.php');
 ?>
 
-<h1><?=$TITLE;?></h1>
-<hr />
-<ul class="hint">
-<li><strong>[Hint]</strong> After the plays for a game are entered, set the "Opposing Team Score" below under Update Game.</li>
-<li><strong>[Hint]</strong> If the opposing team forefits, enter a negative score for "Opposing Team Score".</li>
-<li><strong>[Hint]</strong> If the your team forefits, enter a positive score for "Opposing Team Score", and don't enter any plays fror the game.</li>
+<h1><?php echo $TITLE; ?></h1>
+<hr>
+<ul class="hint no-bullet">
+  <li><strong>[Hint]</strong> After the plays for a game are entered, set the "Opposing Team Score" below under Update Game.</li>
+  <li><strong>[Hint]</strong> If the opposing team forefits, enter a negative score for "Opposing Team Score".</li>
+  <li><strong>[Hint]</strong> If the your team forefits, enter a positive score for "Opposing Team Score", and don't enter any plays fror the game.</li>
 </ul>
 
-<hr />
-<p>* = Required Field</p>
+<hr>
+<p>* Required Field</p>
 
 <?php
 
 // Connect to DB
 opendb();
-$recSeason = mysql_query('SELECT * FROM season ORDER BY ID') ;
+$recSeason = $pdo->query('SELECT * FROM season ORDER BY ID') ;
 
 // If Add button clicked, add new game
 if (isset($_POST['Add']) && $demo_mode == '0') {
   $_POST['cboGameU'] = '';
   if (!isset($_POST['txtOpposingTeam']) || !isset($_POST['txtField']) || !isset($_POST['txtFieldNumber']) || !isset($_POST['txtDate']) || !isset($_POST['txtTime']) || $_POST['txtOpposingTeam'] == '' || $_POST['txtField'] == '' || $_POST['txtFieldNumber'] == '' || $_POST['txtDate'] == '' || $_POST['txtTime'] == '') {
-    print ('<H2>Failed to add game to DB<br />There is a blank field</H2>');
+    print ('<H2>Failed to add game to DB<br>There is a blank field</H2>');
     require('../config/footer.php');
     exit;
   }
@@ -46,12 +46,12 @@ if (isset($_POST['Add']) && $demo_mode == '0') {
   } else {
     $notes = NULL;
   }
-  $result = mysql_query('INSERT INTO game (ID,OpposingTeam,Field,FieldNumber,GameDate,Notes,SeasonID)
+  $result = $pdo->query('INSERT INTO game (ID,OpposingTeam,Field,FieldNumber,GameDate,Notes,SeasonID)
             VALUES (NULL, "'.addslashes($_POST['txtOpposingTeam']).'","'.addslashes($_POST['txtField']).'",'.addslashes($_POST['txtFieldNumber']).',
             "'.date('Y-m-d H:i:s',strtotime(addslashes($_POST['txtDate']).' '.addslashes($_POST['txtTime']))).'","'.$notes.'",
 	    '.addslashes($_POST['cboSeason']).')');
   if (!$result) {
-    print ('<H2>Failed to add game to DB<br />'.mysql_error().'</H2>');
+    print ('<H2>Failed to add game to DB<br>'.mysql_error().'</H2>');
     require('../config/footer.php');
     exit;
   }
@@ -61,20 +61,20 @@ if (isset($_POST['Add']) && $demo_mode == '0') {
 if (isset($_POST['Delete']) && $demo_mode == '0') {
   $_POST['cboGameU'] = '';
   if (!isset($_POST['cboGame']) || $_POST['cboGame'] == '') {
-    print ('<H2>Failed to delete game from DB<br />There is a blank field</H2>');
+    print ('<H2>Failed to delete game from DB<br>There is a blank field</H2>');
     require('../config/footer.php');
     exit;
   }
-  $result = mysql_query('SELECT * FROM plays WHERE GameID = '.addslashes($_POST['cboGame']));
-  $row = mysql_fetch_assoc($result);
+  $result = $pdo->query('SELECT * FROM plays WHERE GameID = '.addslashes($_POST['cboGame']));
+  $row = $result->fetch(PDO::FETCH_ASSOC);
   if ($row) {
-    print ('<H2>Failed to delete game from DB<br />There are still plays for this game in the play table!</H2>');
+    print ('<H2>Failed to delete game from DB<br>There are still plays for this game in the play table!</H2>');
     require('../config/footer.php');
     exit;
   }
-  $result = mysql_query('DELETE FROM game WHERE ID = '.addslashes($_POST['cboGame']));
+  $result = $pdo->query('DELETE FROM game WHERE ID = '.addslashes($_POST['cboGame']));
   if ($result == False) {
-    print ('<H2>Failed to delete game from DB<br />'.mysql_error().'</H2>');
+    print ('<H2>Failed to delete game from DB<br>'.mysql_error().'</H2>');
     require('../config/footer.php');
     exit;
   }
@@ -83,7 +83,7 @@ if (isset($_POST['Delete']) && $demo_mode == '0') {
 // If Update button clicked, add new game
 if (isset($_POST['Update']) && $demo_mode == '0') {
   if (!isset($_POST['txtOpposingTeamU']) || !isset($_POST['txtFieldU']) || !isset($_POST['txtFieldNumberU']) || !isset($_POST['txtDateU']) || !isset($_POST['txtTimeU']) || $_POST['txtOpposingTeamU'] == '' || $_POST['txtFieldU'] == '' || $_POST['txtFieldNumberU'] == '' || $_POST['txtDateU'] == '' || $_POST['txtTimeU'] == '') {
-    print ('<H2>Failed to update game in DB<br />There is a blank field</H2>');
+    print ('<H2>Failed to update game in DB<br>There is a blank field</H2>');
     require('../config/footer.php');
     exit;
   }
@@ -106,13 +106,13 @@ if (isset($_POST['Update']) && $demo_mode == '0') {
   } else {
     $OTS = '"'.addslashes($_POST['txtOpposingTeamScoreU']).'"';
   }
-  $result = mysql_query('UPDATE game SET OpposingTeam = "'.addslashes($_POST['txtOpposingTeamU']).'", Field = "'
+  $result = $pdo->query('UPDATE game SET OpposingTeam = "'.addslashes($_POST['txtOpposingTeamU']).'", Field = "'
             .addslashes($_POST['txtFieldU']).'", FieldNumber = '.addslashes($_POST['txtFieldNumberU']).', GameDate = "'
             .date('Y-m-d H:i:s',strtotime(addslashes($_POST['txtDateU']).' '.addslashes($_POST['txtTimeU']))).'", MakeUpField = '
             .$MakeUpField.', MakeUpFieldNumber = '.$MakeUpFieldNumber.', MakeUpDate = '.$MakeUpDate.', OpposingTeamScore = '.$OTS
             .', Notes = "'.$notes.'" WHERE ID = '.$_POST['cboGameU']);
   if (!$result) {
-    print ('<H2>Failed to update game in DB<br />'.mysql_error().'</H2>');
+    print ('<H2>Failed to update game in DB<br>'.mysql_error().'</H2>');
     require('../config/footer.php');
     exit;
   }
@@ -120,12 +120,12 @@ if (isset($_POST['Update']) && $demo_mode == '0') {
 }
 
 if (isset($_POST['cboSeason']) && !$_POST['cboSeason'] == '') {
-  $recGame = mysql_query('SELECT * FROM game WHERE SeasonID = '.addslashes($_POST['cboSeason']).' ORDER BY GameDate') ;
+  $recGame = $pdo->query('SELECT * FROM game WHERE SeasonID = '.addslashes($_POST['cboSeason']).' ORDER BY GameDate') ;
 }
 
 ?>
 <form name="game" method="POST">
-  <table border="0">
+  <table border="0" class="small-12">
     <tr>
       <td>
         <p> <strong>*Season:</strong> </p></td>
@@ -134,14 +134,14 @@ if (isset($_POST['cboSeason']) && !$_POST['cboSeason'] == '') {
           <option value=""></option>
 <?php
 if ($recSeason) {
-  while ($rowSeason = mysql_fetch_assoc($recSeason)) {
+  while ($rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC) ) {
     if (isset($_POST['cboSeason']) && $_POST['cboSeason'] == $rowSeason['ID']) {
       print '          <OPTION SELECTED';
     } else {
       print '          <OPTION';
     }
 ?>
- VALUE="<?=$rowSeason['ID']?>"><?=stripslashes($rowSeason['Description'])?></option>
+ VALUE="<?php echo $rowSeason['ID']?>"><?php echo stripslashes($rowSeason['Description'])?></option>
 <?php
   }
 }
@@ -155,21 +155,21 @@ if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
   exit;
 }
 ?>
-    <tr><td colspan="4"><hr /></td></tr>
+
     <tr valign="CENTER">
       <td> <strong>Add Game:</strong> </td>
       <td> 
-        *Opposing Team:<br />
+        *Opposing Team:<br>
         <input type="TEXT" name="txtOpposingTeam" value="<?php
         if (isset($_POST['txtOpposingTeam']) && $_POST['txtOpposingTeam'] <> '') { echo stripslashes($_POST['txtOpposingTeam']); }
         ?>" maxlength="50" size="20"> </td>
       <td> 
-        *Field:<br />
+        *Field:<br>
         <input type="TEXT" name="txtField" value="<?php
         if (isset($_POST['txtField']) && $_POST['txtField'] <> '') { echo stripslashes($_POST['txtField']); }
         ?>" maxlength="50" size="20"> </td>
       <td> 
-        *Field #:<br />
+        *Field #:<br>
         <input type="TEXT" name="txtFieldNumber" value="<?php
         if (isset($_POST['txtFieldNumber']) && $_POST['txtFieldNumber'] <> '') { echo stripslashes($_POST['txtFieldNumber']); }
         ?>" maxlength="3" size="3"> </td>
@@ -177,12 +177,12 @@ if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
     <tr>
       <td>   </td>
       <td> 
-        *Date (mm/dd/yyyy):<br />
+        *Date (mm/dd/yyyy):<br>
         <input type="TEXT" name="txtDate" value="<?php
         if (isset($_POST['txtDate']) && $_POST['txtDate'] <> '') { echo stripslashes($_POST['txtDate']); }
         ?>" maxlength="50" size="20"> </td>
       <td> 
-        *Time (hh:mm 24 hour time):<br />
+        *Time (hh:mm 24 hour time):<br>
         <input type="TEXT" name="txtTime" value="<?php
         if (isset($_POST['txtTime']) && $_POST['txtTime'] <> '') { echo stripslashes($_POST['txtTime']); }
          ?>" maxlength="50" size="20"> </td>
@@ -191,13 +191,13 @@ if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
     <tr>
       <td>   </td>
       <td colspan="2"> 
-        Game Notes:<br />
+        Game Notes:<br>
         <textarea name="txtNotes" cols="30" rows="4" wrap="VIRTUAL"><?php if (isset($_POST['txtNotes']) && $_POST['txtNotes'] <> '') { echo stripslashes($_POST['txtNotes']); } ?></textarea>
          </td>
       <td> 
-        <input type="SUBMIT" name="Add" value="Add >>"> </td>
+        <button type="SUBMIT" name="Add" value="">Add >></button> </td>
     </tr>
-    <tr><td colspan="4"><hr /></td></tr>
+
     <tr>
       <td> <strong>Remove Game:</strong> </td>
       <td colspan="3"> 
@@ -205,35 +205,35 @@ if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
           <option value=""></option>
 <?php
 if ($recGame) {
-  while ($rowGame = mysql_fetch_assoc($recGame)) {
+  while ($rowGame = $recGame->fetch(PDO::FETCH_ASSOC)) {
 ?>
-          <option value="<?=$rowGame['ID']?>"><?=stripslashes($rowGame['OpposingTeam'])?> [<?=date('m/d/y h:i a',
+          <option value="<?php echo $rowGame['ID']?>"><?php echo stripslashes($rowGame['OpposingTeam'])?> [<?php echo date('m/d/y h:i a',
           strtotime($rowGame['GameDate']))?>]</option>
 <?php
   }
 }
 ?>
         </select>
-        <input type="SUBMIT" name="Delete" value="Delete >>"> </td>
+        <button type="submit" name="Delete" value="">Delete >></button> </td>
     </tr>
-    <tr><td colspan="4"><hr /></td></tr>
+
     <tr>
       <td> <strong>Update Game:</strong> </td>
       <td colspan="3"> 
         <select name="cboGameU" size="1" onchange="document.game.submit()">
           <option value=""></option>
 <?php
-if (mysql_num_rows($recGame) <> 0) {
+if ($recGame->fetchColumn() <> 0) {
   mysql_data_seek($recGame, 0);
   if ($recGame) {
-    while ($rowGame = mysql_fetch_assoc($recGame)) {
+    while ($rowGame = $recGame->fetch(PDO::FETCH_ASSOC)) {
       if (isset($_POST['cboGameU']) && $_POST['cboGameU'] == $rowGame['ID']) {
         $selected = 'SELECTED ';
       } else {
         $selected = '';
       }
 ?>
-          <OPTION <?=$selected?>VALUE="<?=$rowGame['ID']?>"><?=stripslashes($rowGame['OpposingTeam'])?> [<?=date('m/d/y h:i a',
+          <OPTION <?php echo $selected?>VALUE="<?php echo $rowGame['ID']?>"><?php echo stripslashes($rowGame['OpposingTeam'])?> [<?php echo date('m/d/y h:i a',
           strtotime($rowGame['GameDate']))?>]</option>
 <?php
     }
@@ -244,25 +244,25 @@ if (mysql_num_rows($recGame) <> 0) {
     </tr>
 <?php
 if (isset($_POST['cboGameU']) && $_POST['cboGameU'] <> '') {
-  $recGame = mysql_query('SELECT * FROM game WHERE ID = '.addslashes($_POST['cboGameU'])) ;
-  $rowGame = mysql_fetch_assoc($recGame);
+  $recGame = $pdo->query('SELECT * FROM game WHERE ID = '.addslashes($_POST['cboGameU'])) ;
+  $rowGame = $recGame->fetch(PDO::FETCH_ASSOC);
 ?>
     <tr valign="CENTER">
       <td>   </td>
       <td> 
-        *Opposing Team:<br />
-        <input type="TEXT" name="txtOpposingTeamU" value="<?= stripslashes($rowGame['OpposingTeam'])?>" maxlength="50" size="20"> </td>
+        *Opposing Team:<br>
+        <input type="TEXT" name="txtOpposingTeamU" value="<?php echo stripslashes($rowGame['OpposingTeam'])?>" maxlength="50" size="20"> </td>
       <td> 
-        *Field:<br />
-        <input type="TEXT" name="txtFieldU" value="<?= stripslashes($rowGame['Field']) ?>" maxlength="50" size="20"> </td>
+        *Field:<br>
+        <input type="TEXT" name="txtFieldU" value="<?php echo stripslashes($rowGame['Field']) ?>" maxlength="50" size="20"> </td>
       <td> 
-        *Field #:<br />
-        <input type="TEXT" name="txtFieldNumberU" value="<?=$rowGame['FieldNumber']?>" maxlength="3" size="3"> </td>
+        *Field #:<br>
+        <input type="TEXT" name="txtFieldNumberU" value="<?php echo $rowGame['FieldNumber']?>" maxlength="3" size="3"> </td>
     </tr>
     <tr>
       <td>   </td>
       <td> 
-        *Date (mm/dd/yyyy):<br />
+        *Date (mm/dd/yyyy):<br>
 <?php
   if ($rowGame['GameDate'] <> '') {
     $datearray = explode(' ',$rowGame['GameDate']);
@@ -274,28 +274,28 @@ if (isset($_POST['cboGameU']) && $_POST['cboGameU'] <> '') {
     $datestr = $timestr = '';
   }
 ?>
-        <input type="TEXT" name="txtDateU" value="<?=$datestr?>" maxlength="50" size="20"> </td>
+        <input type="TEXT" name="txtDateU" value="<?php echo $datestr?>" maxlength="50" size="20"> </td>
       <td> 
-        *Time (hh:mm 24 hour time):<br />
-        <input type="TEXT" name="txtTimeU" value="<?=$timestr?>" maxlength="50" size="20"> </td>
+        *Time (hh:mm 24 hour time):<br>
+        <input type="TEXT" name="txtTimeU" value="<?php echo $timestr?>" maxlength="50" size="20"> </td>
       <td> 
-        Opposing Team Score:<br />
-        <input type="TEXT" name="txtOpposingTeamScoreU" value="<?=$rowGame['OpposingTeamScore']?>" maxlength="3" size="3"> </td>
+        Opposing Team Score:<br>
+        <input type="TEXT" name="txtOpposingTeamScoreU" value="<?php echo $rowGame['OpposingTeamScore']?>" maxlength="3" size="3"> </td>
     </tr>
     <tr valign="CENTER">
       <td> 
          </td>
       <td> 
-        Make-up Field:<br />
-        <input type="TEXT" name="txtMUFieldU" value="<?= stripslashes($rowGame['MakeUpField']) ?>" maxlength="50" size="20"> </td>
+        Make-up Field:<br>
+        <input type="TEXT" name="txtMUFieldU" value="<?php echo stripslashes($rowGame['MakeUpField']) ?>" maxlength="50" size="20"> </td>
       <td> 
-        Make-up Field #:<br />
-        <input type="TEXT" name="txtMUFieldNumberU" value="<?=$rowGame['MakeUpFieldNumber']?>" maxlength="3" size="3"> </td>
+        Make-up Field #:<br>
+        <input type="TEXT" name="txtMUFieldNumberU" value="<?php echo $rowGame['MakeUpFieldNumber']?>" maxlength="3" size="3"> </td>
     </tr>
     <tr>
       <td>   </td>
       <td> 
-        Make-up Date (mm/dd/yyyy):<br />
+        Make-up Date (mm/dd/yyyy):<br>
 <?php
   if ($rowGame['MakeUpDate'] <> '') {
     $datearray = explode(' ',$rowGame['MakeUpDate']);
@@ -307,26 +307,26 @@ if (isset($_POST['cboGameU']) && $_POST['cboGameU'] <> '') {
     $datestr = $timestr = '';
   }
 ?>
-        <input type="TEXT" name="txtMUDateU" value="<?=$datestr?>" maxlength="50" size="20"> </td>
+        <input type="TEXT" name="txtMUDateU" value="<?php echo $datestr?>" maxlength="50" size="20"> </td>
       <td> 
-        *Time (hh:mm 24 hour time):<br />
-        <input type="TEXT" name="txtMUTimeU" value="<?=$timestr?>" maxlength="50" size="20"> </td>
+        *Time (hh:mm 24 hour time):<br>
+        <input type="TEXT" name="txtMUTimeU" value="<?php echo $timestr?>" maxlength="50" size="20"> </td>
       <td>   </td>
     </tr>
     <tr>
       <td>   </td>
       <td colspan="2"> 
-        Game Notes:<br />
-        <textarea name="txtNotesU" cols="30" rows="4" wrap="VIRTUAL"><?=$rowGame['Notes']?></textarea> </td>
+        Game Notes:<br>
+        <textarea name="txtNotesU" cols="30" rows="4" wrap="VIRTUAL"><?php echo $rowGame['Notes']?></textarea> </td>
       <td> 
-        <input type="SUBMIT" name="Update" value="Update >>"> </td>
+        <button type="SUBMIT" name="Update" value="">Update >></button> </td>
     </tr>
 <?php
 }
 ?>
   </table>
 </form>
-<hr />
+<hr>
 <a href="./">Main Admin Page</a> | <a href="season.php">Season Admin Page</a> | Game Admin Page |
 <a href="player.php">Player Admin Page</a> | <a href="plays.php">Plays Admin Page</a>
 <?php

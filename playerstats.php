@@ -12,22 +12,22 @@ $TITLE=$team_name.' Player Statistic Report - '.$season_name;
 require('./config/header.php');
 ?>
 
-<h1><?=$TITLE;?></h1>
-<hr />
+<h1><?php echo $TITLE;?></h1>
+<hr>
 <form name="bios" method="post">
 Switch Season:
 <select name="cboSeason" size="1" onchange="document.bios.submit()">
 <?php
-$recSeason = mysql_query('SELECT * FROM season ORDER BY ID') ;
+$recSeason = $pdo->query('SELECT * FROM season ORDER BY ID') ;
 if ($recSeason) {
-  while ($rowSeason = mysql_fetch_assoc($recSeason)) {
+  while ($rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC)) {
     if ((isset($_POST['cboSeason']) && $_POST['cboSeason'] == $rowSeason['ID']) || $rowSeason['DefaultSeason']) {
       print '          <option selected';
     } else {
       print '          <option';
     }
 ?>
- VALUE="<?=$rowSeason['ID']?>"><?=stripslashes($rowSeason['Description'])?></option>
+ VALUE="<?php echo $rowSeason['ID']?>"><?php echo stripslashes($rowSeason['Description'])?></option>
 <?php
   }
 }
@@ -46,9 +46,9 @@ if (isset($_GET['ID'])) {
 
 <?php
 if (!isset($_GET['ID'])) {
-  $recPlayer=mysql_query('SELECT * FROM player WHERE SeasonID = '.$season_id.' ORDER BY LastName, FirstName') ;
+  $recPlayer=$pdo->query('SELECT * FROM player WHERE SeasonID = '.$season_id.' ORDER BY LastName, FirstName') ;
 } else {
-  $recPlayer=mysql_query('SELECT * FROM player WHERE ID = '.addslashes($_GET['ID']).' AND SeasonID = '.$season_id
+  $recPlayer=$pdo->query('SELECT * FROM player WHERE ID = '.addslashes($_GET['ID']).' AND SeasonID = '.$season_id
              .' ORDER BY LastName, FirstName') ;
 }
 $nTotalGames = 0;
@@ -66,25 +66,25 @@ $nTotalNPs = 0;
 $nTotalSlug = 0;
 $nTotalAve = 0;
 ?>
-<table border="0" width="100%" class="stats">
+<table border="0" class="stats small-12">
   <tr valign="top">
-    <th width="18%">Name</th>
-    <th width="6%">G</th>
-    <th width="6%">AB</th>
-    <th width="6%">R</th>
-    <th width="6%">H</th>
-    <th width="6%">2B</th>
-    <th width="6%">3B</th>
-    <th width="6%">HR</th>
-    <th width="6%">RBI </th>
-    <th width="6%">BB</th>
-    <th width="6%">K</th>
-    <th width="6%">Er</th>
+    <th>Name</th>
+    <th>G</th>
+    <th>AB</th>
+    <th>R</th>
+    <th>H</th>
+    <th>2B</th>
+    <th>3B</th>
+    <th>HR</th>
+    <th>RBI </th>
+    <th>BB</th>
+    <th>K</th>
+    <th>Er</th>
 <?php if ($show_np) { ?>
-    <th width="6%">NPs*</th>
+    <th>NPs*</th>
 <?php } ?>
-    <th width="10%">Slg%</th>
-    <th width="10%">Ave.</th>
+    <th>Slg%</th>
+    <th>Ave.</th>
   </tr>
 <?php
 $i = 0;
@@ -97,9 +97,9 @@ $sRunsMaxID = $sHitsMaxID = $sRBIsMaxID = $sWalksMaxID = $sStrikeOutsMaxID = $sH
 $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = $sRunsMaxID = $sHitsMaxID = $sRBIsMaxID = $sWalksMaxID = $sStrikeOutsMaxID = NULL;
 $sHomeRunsMaxID = $sErrorsMaxID = $sAverageMaxID = $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = NULL;
 // Calculate Stats for each Player
-while ($rowPlayer=mysql_fetch_assoc($recPlayer)) {
+while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   $i++;
-  $recPlays=mysql_query('SELECT * FROM plays WHERE PlayerID = '.$rowPlayer['ID'].' AND SeasonID = '.$season_id
+  $recPlays=$pdo->query('SELECT * FROM plays WHERE PlayerID = '.$rowPlayer['ID'].' AND SeasonID = '.$season_id
             .' ORDER BY GameID, Inning, PlayerID') ;
   // Reset player stats
   $nAtBats = $nRuns = $nHits = $nRBIs = $nWalks = $nStrikeOuts = $nHomeRuns = $nErrors = $nAverage = $nDoubles = $nTriples = $nNPs = 0;
@@ -107,7 +107,7 @@ while ($rowPlayer=mysql_fetch_assoc($recPlayer)) {
   // Reset game number
   $nGameNumber = NULL;
   // Increment stats for each play made
-  while ($rowPlays=mysql_fetch_assoc($recPlays)) {
+  while ($rowPlays=$recPlays->fetch(PDO::FETCH_ASSOC)) {
     // Increment number of games if not the same GameID(depends on proper sorting, see recPlays query statement)
     if ($nGameNumber <> $rowPlays['GameID']) {
       $nGameNumber = $rowPlays['GameID'];
@@ -169,8 +169,8 @@ while ($rowPlayer=mysql_fetch_assoc($recPlayer)) {
         $nNPs++;
         break;
     }
-    $recType=mysql_query('SELECT * FROM type WHERE ID = '.$rowPlays['TypeID']);
-    $rowType=mysql_fetch_assoc($recType);
+    $recType = $pdo->query('SELECT * FROM type WHERE ID = '.$rowPlays['TypeID']);
+    $rowType = $recType->fetch(PDO::FETCH_ASSOC);
     // Tally At Bats and Hits
     switch ($rowType['HitOrOutID']) {
       case 1:
@@ -330,72 +330,72 @@ if (isset($StatTemp)) {
   }
     $i++;
 ?>
-  <tr<?= $tdbg ?>>
-    <td valign="top"> <a href="playerbios.php?ID=<?=$tmp['PlayerID']?>"><?=
+  <tr<?php echo $tdbg ?>>
+    <td valign="top"> <a href="playerbios.php?ID=<?php echo $tmp['PlayerID']?>"><?php echo
     stripslashes($tmp['PlayerName'])?></a> </td>
-    <td valign="top"> <?=$tmp['Games']?> </td>
-    <td valign="top"> <?=$tmp['AtBats']?> </td>
+    <td valign="top"> <?php echo $tmp['Games']?> </td>
+    <td valign="top"> <?php echo $tmp['AtBats']?> </td>
     <?php if ($tmp['PlayerID'] == $sRunsMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Runs']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Runs']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Runs']?> </td>
+      <td valign="top"> <?php echo $tmp['Runs']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sHitsMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Hits']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Hits']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Hits']?> </td>
+      <td valign="top"> <?php echo $tmp['Hits']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sDoublesMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Doubles']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Doubles']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Doubles']?> </td>
+      <td valign="top"> <?php echo $tmp['Doubles']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sTriplesMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Triples']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Triples']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Triples']?> </td>
+      <td valign="top"> <?php echo $tmp['Triples']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sHomeRunsMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['HomeRuns']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['HomeRuns']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['HomeRuns']?> </td>
+      <td valign="top"> <?php echo $tmp['HomeRuns']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sRBIsMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['RBIs']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['RBIs']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['RBIs']?> </td>
+      <td valign="top"> <?php echo $tmp['RBIs']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sWalksMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Walks']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Walks']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Walks']?> </td>
+      <td valign="top"> <?php echo $tmp['Walks']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sStrikeOutsMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['StrikeOuts']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['StrikeOuts']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['StrikeOuts']?> </td>
+      <td valign="top"> <?php echo $tmp['StrikeOuts']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sErrorsMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Errors']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Errors']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Errors']?> </td>
+      <td valign="top"> <?php echo $tmp['Errors']?> </td>
     <?php } ?>
     <?php if ($show_np) { ?>
     <?php   if ($tmp['PlayerID'] == $sNPsMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['NPs']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['NPs']?> </td>
     <?php   } else { ?>
-      <td valign="top"> <?=$tmp['NPs']?> </td>
+      <td valign="top"> <?php echo $tmp['NPs']?> </td>
     <?php   } ?>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sSlugMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Slug']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Slug']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Slug']?> </td>
+      <td valign="top"> <?php echo $tmp['Slug']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sAverageMaxID) { ?>
-      <td valign="top" class="topstats"><?=$tmp['Average']?> </td>
+      <td valign="top" class="topstats"><?php echo $tmp['Average']?> </td>
     <?php } else { ?>
-      <td valign="top"> <?=$tmp['Average']?> </td>
+      <td valign="top"> <?php echo $tmp['Average']?> </td>
     <?php } ?>
   </tr>
 <?php
@@ -404,22 +404,22 @@ if (isset($StatTemp)) {
 if (!isset($_GET['ID'])) {
 ?>
  <tr valign="top">
-   <td valign="top"><hr /><strong>Totals:</strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalGames?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalAtBats?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalRuns?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalHits?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalDoubles?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalTriples?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalHomeRuns?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalRBIs?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalWalks?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalStrikeOuts?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalErrors?></strong></td>
-   <td valign="top"><hr /><strong><?=$nTotalNPs?></strong></td>
-   <td valign="top"><hr /><strong>
+   <td valign="top"><hr><strong>Totals:</strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalGames?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalAtBats?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalRuns?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalHits?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalDoubles?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalTriples?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalHomeRuns?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalRBIs?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalWalks?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalStrikeOuts?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalErrors?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalNPs?></strong></td>
+   <td valign="top"><hr><strong>
    <?php if ($i <> 0) { echo substr(($nTotalSlug / $i),0,5); } else { echo '0'; } ?></strong></td>
-   <td valign="top"><hr /><strong>
+   <td valign="top"><hr><strong>
    <?php if ($i <> 0) { echo substr(($nTotalAve / $i),1,4); } else { echo '0'; } ?></strong></td>
  </tr>
 <?php

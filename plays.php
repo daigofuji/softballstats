@@ -30,23 +30,23 @@ if (isset($_GET['ID'])) {
 }  
 ?>
 
-<h1><?=$TITLE;?></h1>
-<hr />
+<h1><?php echo $TITLE;?></h1>
+<hr>
 
 <form name="bios" method="post">
 Switch Season:
 <select name="cboSeason" size="1" onchange="document.bios.submit()">
 <?php
-$recSeason = mysql_query('SELECT * FROM season ORDER BY ID') ;
+$recSeason = $pdo->query('SELECT * FROM season ORDER BY ID') ;
 if ($recSeason) {
-  while ($rowSeason = mysql_fetch_assoc($recSeason)) {
+  while ($rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC)) {
     if ((isset($_POST['cboSeason']) && $_POST['cboSeason'] == $rowSeason['ID']) || $rowSeason['DefaultSeason']) {
       print '          <option selected="selected"';
     } else {
       print '          <option';
     }
 ?>
- VALUE="<?=$rowSeason['ID']?>"><?=stripslashes($rowSeason['Description'])?></option>
+ VALUE="<?php echo $rowSeason['ID']?>"><?=stripslashes($rowSeason['Description'])?></option>
 <?php
   }
 }
@@ -56,20 +56,20 @@ if ($recSeason) {
 <p>
 <form name="plays" method="post">
 <?php
-$recGame=mysql_query('SELECT * FROM game WHERE SeasonID = '.$season_id.' ORDER BY GameDate' ) ;
+$recGame=$pdo->query('SELECT * FROM game WHERE SeasonID = '.$season_id.' ORDER BY GameDate');
 ?>
 Select Game: <select name="cboGame" size="1" onchange="document.plays.submit()">
   <option value="0"></option>
 <?php
 if ($recGame) {
-  while ($rowGame = mysql_fetch_assoc($recGame)) {
+  while ($rowGame = $recGame->fetch(PDO::FETCH_ASSOC)) {
     if (isset($game_id) && $game_id == $rowGame['ID']) {
       $sel = ' selected="selected"';
     } else {
       $sel = '';
     }
 ?>
-    <option<?=$sel?> VALUE="<?=$rowGame['ID']?>"><?=stripslashes($rowGame['OpposingTeam'])?> [<?=date('m/d/y h:i a',
+    <option<?php echo $sel?> VALUE="<?php echo $rowGame['ID']?>"><?=stripslashes($rowGame['OpposingTeam'])?> [<?=date('m/d/y h:i a',
     strtotime($rowGame['GameDate']))?>]</option>
 <?php
   }
@@ -81,28 +81,28 @@ if (!isset($game_id) || $game_id == '') {
   require('./config/footer.php');
   exit;
 }
-$recPlays=mysql_query('SELECT * FROM plays WHERE GameID = '.$game_id.' AND SeasonID = '.$season_id.' ORDER BY Inning, DateAdded' ) ;
-if (mysql_num_rows($recPlays) == 0) {
+$recPlays=$pdo->query('SELECT * FROM plays WHERE GameID = '.$game_id.' AND SeasonID = '.$season_id.' ORDER BY Inning, DateAdded' );
+if ($recPlays->fetchColumn() == 0) {
   echo "<h2>There are no plays for this game yet</h2>";
   require('./config/footer.php');
   exit;
 }
 ?>
-<table border="0" width="100%">
+<table border="0" class="small-12">
   <tr valign="top">
-    <th width="15%">Inning</th>
-    <th width="40%">Player</th>
-    <th width="45%">Play</th>
+    <th>Inning</th>
+    <th>Player</th>
+    <th>Play</th>
   </tr>
 <?php
 $i = 1;
 $last_inning = '';
 $last_player = '';
-while($rowPlays=mysql_fetch_assoc($recPlays)) {
-  $recPlayer = mysql_query('SELECT * FROM player WHERE ID = '.$rowPlays['PlayerID'].' AND SeasonID = '.$season_id);
-  $rowPlayer = mysql_fetch_assoc($recPlayer);
-  $recPlayType = mysql_query('SELECT * FROM type WHERE ID = '.$rowPlays['TypeID']);
-  $rowPlayType = mysql_fetch_assoc($recPlayType);
+while($rowPlays=$recPlays->fetch(PDO::FETCH_ASSOC)) {
+  $recPlayer = $pdo->query('SELECT * FROM player WHERE ID = '.$rowPlays['PlayerID'].' AND SeasonID = '.$season_id);
+  $rowPlayer = $recPlayer->fetch(PDO::FETCH_ASSOC);
+  $recPlayType = $pdo->query('SELECT * FROM type WHERE ID = '.$rowPlays['TypeID']);
+  $rowPlayType = $recPlayType->fetch(PDO::FETCH_ASSOC);
   if ($last_inning <> $rowPlays['Inning']) {
     $inning = $rowPlays['Inning'];
     $i = 1;
@@ -128,9 +128,9 @@ while($rowPlays=mysql_fetch_assoc($recPlays)) {
 
 ?>
   <tr>
-    <td<?=$inning_tdbg?>><?=$inning?></td>
-    <td<?=$tdbg?>><?=$player?></td>
-    <td<?=$tdbg?>><?=$rowPlayType['Description']?></td>
+    <td<?php echo $inning_tdbg; ?>><?php echo $inning; ?></td>
+    <td<?php echo $tdbg; ?>><?php echo $player; ?></td>
+    <td<?php echo $tdbg; ?>><?php echo $rowPlayType['Description']; ?></td>
   </tr>
 <?php
 }

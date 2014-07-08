@@ -12,12 +12,12 @@ $TITLE=$team_name.' Softball Schedule - '.$season_name;
 require('./config/header.php');
 ?>
 
-<h1><?=$TITLE;?></h1>
+<h1><?php echo $TITLE;?></h1>
 
-<hr />
+<hr>
 
-<ul class="hint">
-<li><strong>[Hint]</strong> Click the opposing team name to see the play-by-play for the game.</li>
+<ul class="hint no-bullet">
+  <li><strong>[Hint]</strong> Click the opposing team name to see the play-by-play for the game.</li>
 </ul>
 
 
@@ -25,16 +25,16 @@ require('./config/header.php');
 Switch Season:
 <select name="cboSeason" size="1" onchange="document.bios.submit()">
 <?php
-$recSeason = mysql_query('SELECT * FROM season ORDER BY ID') ;
+$recSeason = $pdo->query('SELECT * FROM season ORDER BY ID');
 if ($recSeason) {
-  while ($rowSeason = mysql_fetch_assoc($recSeason)) {
+  while ($rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC)) {
     if ((isset($_POST['cboSeason']) && $_POST['cboSeason'] == $rowSeason['ID']) || $rowSeason['DefaultSeason']) {
       print '          <option selected';
     } else {
       print '          <option';
     }
 ?>
- value="<?=$rowSeason['ID']?>"><?=stripslashes($rowSeason['Description'])?></option>
+ value="<?php echo $rowSeason['ID'] ?>"><?php echo stripslashes($rowSeason['Description'])?></option>
 <?php
   }
 }
@@ -42,19 +42,19 @@ if ($recSeason) {
 </select>
 </form>
 
-<br />
+<br>
 
 <?php
-$recGame=mysql_query('SELECT * FROM game WHERE SeasonID = '.$season_id.' ORDER BY GameDate' ) ;
+$recGame=$pdo->query('SELECT * FROM game WHERE SeasonID = '.$season_id.' ORDER BY GameDate' ) ;
 ?>
-<table border=0>
+<table border="0" class="small-12">
   <tr valign=top>
-    <th width="17%">Date</th>
-    <th width="17%">Opposing Team</th>
-    <th width="17%">Field Name (Number)</th>
-    <th width="16%">Make-Up Date</th>
-    <th width="16%">Make-Up Field Name</th>
-    <th width="17%">Score</th>
+    <th>Date</th>
+    <th>Opposing Team</th>
+    <th>Field Name (Number)</th>
+    <th>Make-Up Date</th>
+    <th>Make-Up Field Name</th>
+    <th>Score</th>
   </tr>
 <?php
 $Win = 0;
@@ -63,7 +63,7 @@ $Tie = 0;
 $Games = 0;
 $i = 0;
 $j = 0;
-while($rowGame=mysql_fetch_assoc($recGame)) {
+while($rowGame=$recGame->fetch(PDO::FETCH_ASSOC)) {
   if ($i&1) {
     $tdbg = ' class="odd"';
   } else {
@@ -74,14 +74,14 @@ while($rowGame=mysql_fetch_assoc($recGame)) {
     echo '<tr><td colspan="5" align="center"><em>Playoffs!!!!</em></td></tr>' ;
   }
   $j++;
-  $recPlays=mysql_query('SELECT * FROM plays WHERE GameID = '.$rowGame['ID'].' AND SeasonID = '.$season_id);
+  $recPlays=$pdo->query('SELECT * FROM plays WHERE GameID = '.$rowGame['ID'].' AND SeasonID = '.$season_id);
   $nScore = 0;
-  if (mysql_num_rows($recPlays) == 0) {
+  if ($recPlays->fetchColumn() == 0) {
     $no_plays = true;
   } else {
     $no_plays = false;
   }
-  while($rowPlays=mysql_fetch_assoc($recPlays)) {
+  while($rowPlays=$recPlays->fetch(PDO::FETCH_ASSOC)) {
     if ($rowPlays['TypeID'] == 24) {  // Type 24 is the 'Scored Run' type
       $nScore++;
     }
@@ -123,29 +123,29 @@ while($rowGame=mysql_fetch_assoc($recGame)) {
     $ots = $nScore.' to '.$rowGame['OpposingTeamScore'];
   }
 ?>
-  <tr<?=$tdbg?> valign="top">
-    <td><?=$date?></td>
-    <td><?=$opp_team?></td>
-    <td><?=$field?></td>
-    <td><?=$mu_date?></td>
-    <td><?=$mu_field?></td>
-    <td><?=$ots?></td>
+  <tr<?php echo $tdbg?> valign="top">
+    <td><?php echo $date?></td>
+    <td><?php echo $opp_team?></td>
+    <td><?php echo $field?></td>
+    <td><?php echo $mu_date?></td>
+    <td><?php echo $mu_field?></td>
+    <td><?php echo $ots?></td>
   </tr>
 <?php
   if ($rowGame['Notes'] <> '') {
 ?>
-  <tr<?=$tdbg?> valign="top">
+  <tr<?php echo $tdbg?> valign="top">
     <td valign="top" align="right" colspan="1">Game Notes:</td>
-    <td colspan="5"> <?=nl2br(stripslashes($rowGame['Notes']))?></td>
+    <td colspan="5"> <?php stripslashes($rowGame['Notes'])?></td>
   </tr>
 <?php
   }
 }
 ?>
 </table>
-<hr />
+<hr>
 <h4>
-Record - Win:<?=$Win;?> Tie:<?=$Tie;?> Loss:<?=$Loss;?>  Games:<?=$Games;?>
+Record - Win:<?php echo $Win;?> Tie:<?php echo $Tie;?> Loss:<?php echo $Loss;?>  Games:<?php echo $Games;?>
 </h4>
 <?php
 require('./config/footer.php');

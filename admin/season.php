@@ -12,8 +12,8 @@ if (!isset($HTTP_SERVER_VARS['PHP_AUTH_PW']) || !isset($HTTP_SERVER_VARS['PHP_AU
 require('../config/header.php');
 ?>
 
-<h1><?=$TITLE;?></h1>
-<hr />
+<h1><?php echo $TITLE;?></h1>
+<hr>
 
 <?php
 // Connect to DB
@@ -23,25 +23,25 @@ opendb();
 if (isset($_POST['Add']) && $demo_mode == '0') {
   $_POST['cboSeasonU'] = '';
   if (!isset($_POST['txtSeasonName']) || $_POST['txtSeasonName'] == '') {
-    print ('<H2>Failed to add season to DB<br />There is a blank field</H2>');
+    print ('<H2>Failed to add season to DB<br>There is a blank field</H2>');
     require('../config/footer.php');
     exit;
   } else {
     if (isset($_POST['chkDefaultSeason'])) {
       $def = 1;
-      $result = mysql_query('UPDATE season SET DefaultSeason = 0');
+      $result = $pdo->query('UPDATE season SET DefaultSeason = 0');
       if (!$result) {
-        print ('<H2>Failed to set season as default<br />'.mysql_error().'</H2>');
+        print ('<H2>Failed to set season as default<br>'.mysql_error().'</H2>');
         require('../config/footer.php');
         exit;
       }
     } else {
       $def = 0;
     }
-    $result = mysql_query('INSERT INTO season (ID,Description,DefaultSeason)
+    $result = $pdo->query('INSERT INTO season (ID,Description,DefaultSeason)
               VALUES (NULL, "'.addslashes($_POST['txtSeasonName']).'", '.$def.')');
     if (!$result) {
-      print ('<H2>Failed to add season to DB<br />'.mysql_error().'</H2>');
+      print ('<H2>Failed to add season to DB<br>'.mysql_error().'</H2>');
       require('../config/footer.php');
       exit;
     }
@@ -51,25 +51,25 @@ if (isset($_POST['Add']) && $demo_mode == '0') {
 // If Update button clicked, edit season
 if (isset($_POST['Update']) && $demo_mode == '0') {
   if (!isset($_POST['txtSeasonNameU']) || !isset($_POST['cboSeasonU']) || $_POST['txtSeasonNameU'] == '' || $_POST['cboSeasonU'] == '') {
-    print ('<h2>Failed to update season in DB<br />There is a blank field</h2>');
+    print ('<h2>Failed to update season in DB<br>There is a blank field</h2>');
     require('../config/footer.php');
     exit;
   } else {
     if (isset($_POST['chkDefaultSeasonU']) && $_POST['chkDefaultSeasonU'] <> '') {
       $def = 1;
-      $result = mysql_query('UPDATE season SET DefaultSeason = 0');
+      $result = $pdo->query('UPDATE season SET DefaultSeason = 0');
       if (!$result) {
-        print ('<h2>Failed to set season as default<br />'.mysql_error().'</h2>');
+        print ('<h2>Failed to set season as default<br>'.mysql_error().'</h2>');
         require('../config/footer.php');
         exit;
       }
     } else {
       $def = 'NULL';
     }
-    $result = mysql_query('UPDATE season SET Description = "'.addslashes($_POST['txtSeasonNameU'])
+    $result = $pdo->query('UPDATE season SET Description = "'.addslashes($_POST['txtSeasonNameU'])
               .'",DefaultSeason = '.$def.' WHERE ID = '.addslashes($_POST['cboSeasonU']));
     if (!$result) {
-      print ('<h2>Failed to update season in DB<br />'.mysql_error().'</h2>');
+      print ('<h2>Failed to update season in DB<br>'.mysql_error().'</h2>');
       require('../config/footer.php');
       exit;
     }
@@ -81,58 +81,56 @@ if (isset($_POST['Update']) && $demo_mode == '0') {
 if (isset($_POST['Delete']) && $demo_mode == '0') {
   $_POST['cboSeasonU'] = '';
   if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
-    print ('<h2>Failed to delete season from DB<br />There is a blank field</h2>');
+    print ('<h2>Failed to delete season from DB<br>There is a blank field</h2>');
     require('../config/footer.php');
     exit;
   }
-  $result = mysql_query('SELECT * FROM game WHERE SeasonID = '.addslashes($_POST['cboSeason']));
+  $result = $pdo->query('SELECT * FROM game WHERE SeasonID = '.addslashes($_POST['cboSeason']));
   $row = mysql_fetch_assoc($result);
   if ($row) {
-      print ('<h2>Failed to delete season from DB<br />There are still games for this season in the game table!</h2>');
+      print ('<h2>Failed to delete season from DB<br>There are still games for this season in the game table!</h2>');
       require('../config/footer.php');
       exit;
   }
-  $result = mysql_query('SELECT * FROM player WHERE SeasonID = '.addslashes($_POST['cboSeason']));
+  $result = $pdo->query('SELECT * FROM player WHERE SeasonID = '.addslashes($_POST['cboSeason']));
   $row = mysql_fetch_assoc($result);
   if ($row) {
-      print ('<h2>Failed to delete season from DB<br />There are still players for this season in the player table!</h2>');
+      print ('<h2>Failed to delete season from DB<br>There are still players for this season in the player table!</h2>');
       require('../config/footer.php');
       exit;
   }
-  $result = mysql_query('SELECT Description FROM season WHERE ID = '.addslashes($_POST['cboSeason']).' AND DefaultSeason = 1');
+  $result = $pdo->query('SELECT Description FROM season WHERE ID = '.addslashes($_POST['cboSeason']).' AND DefaultSeason = 1');
   $row = mysql_fetch_assoc($result);
   if ($row) {
     print ('<h2>You can\'t delete "'.$row['Description'].'", it is the current season!</h2>');
     require('../config/footer.php');
     exit;
   }
-  $result = mysql_query('DELETE FROM season WHERE ID = '.addslashes($_POST['cboSeason']));
+  $result = $pdo->query('DELETE FROM season WHERE ID = '.addslashes($_POST['cboSeason']));
   if ($result == False) {
-      print ('<H2>Failed to delete season from DB<br />'.mysql_error().'</H2>');
+      print ('<H2>Failed to delete season from DB<br>'.mysql_error().'</H2>');
       require('../config/footer.php');
       exit;
   }
 }
 
-$recSeason = mysql_query('SELECT * FROM season ORDER BY ID') ;
+$recSeason = $pdo->query('SELECT * FROM season ORDER BY ID') ;
 
 ?>
 [Hint] - "Current Season" is the season that will be displayed on the stats pages.
 <form name="season" method="POST">
-  <table border="0">
-    <tr><td colspan="4"><hr /></td></tr>
+  <table border="0" class="small-12">
     <tr valign="CENTER">
       <td><strong>Add Season:</strong></td>
       <td>
-        Season Name:<br />
+        Season Name:<br>
         <input type="TEXT" name="txtSeasonName" value="" maxlength="50" size="20"></td>
       <td>
-        Current Season?:<br />
+        Current Season?:<br>
         <input type="CHECKBOX" checked name="chkDefaultSeason"></td>
       <td>
-        <input type="SUBMIT" name="Add" value="Add >>"></td>
+        <button type="SUBMIT" name="Add" value="">Add >></button></td>
     </tr>
-    <tr><td colspan="4"><hr /></td></tr>
     <tr>
       <td><strong>Remove Season:</strong></td>
       <td>
@@ -154,9 +152,8 @@ if ($recSeason) {
       <td>
       </td>
       <td>
-        <input type="SUBMIT" name="Delete" value="Delete >>"></td>
+        <button type="SUBMIT" name="Delete" value="">Delete >></button></td>
     </tr>
-    <tr><td colspan="4"><hr /></td></tr>
     <tr>
       <td><strong>Update Season:</strong></td>
       <td colspan="3">
@@ -165,9 +162,9 @@ if ($recSeason) {
 <?php
 $desc = '';
 $check = '';
-$recSeason = mysql_query('SELECT * FROM season ORDER BY ID') ;
+$recSeason = $pdo->query('SELECT * FROM season ORDER BY ID') ;
 if ($recSeason) {
-  while ($rowSeason = mysql_fetch_assoc($recSeason)) {
+  while ($rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC)) {
     $sel = '';
     $curr = '';
      if ($rowSeason['DefaultSeason'] == '1') {
@@ -196,20 +193,20 @@ if (isset($_POST['cboSeasonU']) && $_POST['cboSeasonU'] <> '') {
       <td>
       </td>
       <td>
-        Season Name:<br />
-        <input type="TEXT" name="txtSeasonNameU" value="<?=$desc?>" maxlength="50" size="20"></td>
+        Season Name:<br>
+        <input type="TEXT" name="txtSeasonNameU" value="<?php echo $desc; ?>" maxlength="50" size="20"></td>
       <td>
-        Current Season?:<br />
-        <imput type="CHECKBOX" <?=$check?>NAME="chkDefaultSeasonU"></td>
+        Current Season?:<br>
+        <imput type="CHECKBOX" <?php echo $check; ?>NAME="chkDefaultSeasonU"></td>
       <td>
-        <input type="SUBMIT" name="Update" value="Update >>"></td>
+        <button type="SUBMIT" name="Update">Update >></button></td>
     </tr>
 <?php
 }
 ?>
   </table>
 </form>
-<hr />
+<hr>
 <a href="./">Main Admin Page</a> | Season Admin Page | <a href="game.php">Game Admin Page</a> |
 <a href="player.php">Player Admin Page</a> | <a href="plays.php">Plays Admin Page</a>
 <?php

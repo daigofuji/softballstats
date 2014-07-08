@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
+
 // General Softball Stuff
   // Name used in page titles
   $team_name = 'The Demonstrators';
@@ -9,12 +12,12 @@
   // The directory that SoftballStats is available on your web server
   // Be sure to prepend a / character, and don't append a / character
   // i.e http://www.your-domain.com<$stat_dir>
-  //leave . for relative
-  $stat_dir = '.';
+  // leave . for relative
+  $stat_dir = '/git-repos/softballstats';
 
   // Use built in authorization for Admin pages.
   // !! If you set this to '0', be sure to setup authorization for /admin with your web server or set $show_admin_links to '0' !!
-  $auth_admin_pages = '1';
+  $auth_admin_pages = '0';
 
   // User name you will use to access the Admin pages
   $admin_user = 'admin';
@@ -22,7 +25,7 @@
   // Password you will use to access the Admin pages
   $admin_pass = 'adminpass';
   
-  // Show the Admin links in the left navagation bar.  '1' = show, '0' = hide
+  // Show the Admin links in the navagation bar.  '1' = show, '0' = hide
   $show_admin_links = '1';
 
   // Number of games in a season 
@@ -58,31 +61,33 @@ $version='1.2.1';
 // Functions
 function opendb () {
   // Returns true or false depending on whether or not the databse was opened
-  global $sql_db_name, $sql_server, $sql_server_port, $sql_username, $sql_pass;
-  $link = mysql_connect($sql_server.':'.$sql_server_port, $sql_username, $sql_pass);
-  $connect = mysql_select_db ($sql_db_name);
+  global $pdo, $sql_db_name, $sql_server, $sql_server_port, $sql_username, $sql_pass;
+  $pdo = new PDO('mysql:host='.$sql_server.';dbname='.$sql_db_name, $sql_username, $sql_pass);
 }
 
 function seasoninfo ($id) {
   // Returns an array with season.ID and season.Description of the specified season.ID or the
   // default season if no ID is supplied
-  opendb();
+
+  global $pdo, $sql_db_name, $sql_server, $sql_server_port, $sql_username, $sql_pass;
+  $pdo = new PDO('mysql:host='.$sql_server.';dbname='.$sql_db_name, $sql_username, $sql_pass);
+  
   if ($id == NULL) {
-    $recSeason = mysql_query('SELECT * FROM season WHERE DefaultSeason = 1');
-    $rowSeason = mysql_fetch_assoc($recSeason);
+    $recSeason = $pdo->query('SELECT * FROM season WHERE DefaultSeason = 1');
+    $rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC);
     if ($rowSeason) {
       return array ($rowSeason['ID'], stripslashes($rowSeason['Description']));
     } else {
-      print '<H2>There are no Default Seasons<br />Please correct this in the Season Admin page</h2>';
+      print '<h2>There are no Default Seasons<br>Please correct this in the Season Admin page</h2>';
       exit;
     }
   } else {
-    $recSeason = mysql_query('SELECT * FROM season WHERE ID = '.$id);
-    $rowSeason = mysql_fetch_assoc($recSeason);
+    $recSeason = $pdo->query('SELECT * FROM season WHERE ID = '.$id);
+    $rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC);
     if ($rowSeason) {
       return array ($rowSeason['ID'], stripslashes($rowSeason['Description']));
     } else {
-      print '<H2>There are no Seasons with the ID of '.$id;
+      print '<h2>There are no Seasons with the ID of '.$id.'</h2>';
       exit;
     }
   }
@@ -94,8 +99,7 @@ function authorize() {
   if ($demo_mode == '0' && $auth_admin_pages <> '0') {
     header('WWW-Authenticate: Basic realm="Stat Admin Pages"');
     header('HTTP/1.0 401 Unauthorized');
-    echo "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">
-<html><head>
+    echo "<!doctype html><html><head>
 <title>401 Authorization Required</title>
 </head><body>
 <h1>Authorization Required</h1>
@@ -106,7 +110,7 @@ credentials (e.g., bad password), or your
 browser doesn't understand how to supply
 the credentials required.<p>
 <h2>Please enter the correct administrative password</h2>
-<hr />
+<hr>
 <em>SoftballStats $version</em>
 </body></html>";
     exit;

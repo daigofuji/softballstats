@@ -3,7 +3,7 @@
 
 <?php
 if ($demo_mode <> '0') {
-  print '<hr /><h3>* Demo Site - Admin Pages Are Read-Only  *</h3>';
+  print '<hr><h3>* Demo Site - Admin Pages Are Read-Only  *</h3>';
 }
 ?>
 
@@ -12,10 +12,13 @@ if ($demo_mode <> '0') {
 </div>
 
 
-<div id="footer">
- <a href="http://softballstats.sourceforge.net/"><b>SoftballStats <?=$version ?></b></a>
- Written by: <a href="mailto:dev@swillers.com">David Carlo</a>. Material Copyright &copy; 2002 David Carlo
-</div>
+<footer id="footer" class="mvl clearfix">
+	<small class="pvl">
+		<a href="https://github.com/daigofuji/softballstats"><b>SoftballStats <?php echo $version ?></b></a>
+ 
+ 		Written by: <a href="mailto:dev@swillers.com">David Carlo</a> (<a href="http://softballstats.sourceforge.net/">original</a>). Edited by <a href="https://github.com/daigofuji/">Daigo Fujiwara</a> 
+	</small>
+</footer>
 
 <!-- Javascript -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

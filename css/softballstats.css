@@ -1,194 +1,44 @@
 /*
 Softball Stats 
 http://softballstats.sourceforge.net/
-Written by David Carlo. This CSs file was created by Daigo Fujiwara.
-values Included in config/config.php will over-write following values (in header.php file)
-		body {background: <?=$html_bgcolor?> url(<?=$html_background_image?>) repeat-x; color:<?=$html_text_color?>;}
-		a:link {color:<?=$html_link_color?>;}
-		a:visited {color:<?=$html_vlink_color?>;}
-		a:hover {color:<?=$html_alink_color?>;}
-		h1,td.topstats {color:<?=$html_high_score_color?>;}
-		td.even {background-color:<?=$html_row_highlight_color?>;}
-		div#nav a:link, div#nav a:visited {color:<?=$html_link_color?>; 
-			border-bottom-color:<?=$html_link_color?>; border-left-color:<?=$html_link_color?>; }
-		div#nav a:hover {color:<?=$html_alink_color?>; 
-			border-bottom-color:<?=$html_alink_color?>; border-left-color:<?=$html_alink_color?>; }
+Written by David Carlo. This CSS file was created by Daigo Fujiwara.
 */
 
+/* OOCSS padding-margin */
+.pts, .pas, .pvs { padding-top: 5px !important; }
+.ptm, .pam, .pvm { padding-top: 10px !important; }
+.ptl, .pal, .pvl { padding-top: 20px !important; }
+.ptn, .pan, .pvn { padding-top: 0px !important; }
+.prs, .pas, .phs { padding-right: 5px !important; }
+.prm, .pam, .phm { padding-right: 10px !important; }
+.prl, .pal, .phl { padding-right: 20px !important; }
+.prn, .pan, .phn { padding-right: 0px !important; }
+.pbs, .pas, .pvs { padding-bottom: 5px !important; }
+.pbm, .pam, .pvm { padding-bottom: 10px !important; }
+.pbl, .pal, .pvl { padding-bottom: 20px !important; }
+.pbn, .pan, .pvn { padding-bottom: 0px !important; }
+.pls, .pas, .phs { padding-left: 5px !important; }
+.plm, .pam, .phm { padding-left: 10px !important; }
+.pll, .pal, .phl { padding-left: 20px !important; }
+.pln, .pan, .phn { padding-left: 0px !important; }
+.mts, .mas, .mvs { margin-top: 5px !important; }
+.mtm, .mam, .mvm { margin-top: 10px !important; }
+.mtl, .mal, .mvl { margin-top: 20px !important; }
+.mtn, .man, .mvn { margin-top: 0px !important; }
+.mrs, .mas, .mhs { margin-right: 5px !important; }
+.mrm, .mam, .mhm { margin-right: 10px !important; }
+.mrl, .mal, .mhl { margin-right: 20px !important; }
+.mrn, .man, .mhn { margin-right: 0px !important; }
+.mbs, .mas, .mvs { margin-bottom: 5px !important; }
+.mbm, .mam, .mvm { margin-bottom: 10px !important; }
+.mbl, .mal, .mvl { margin-bottom: 20px !important; }
+.mbn, .man, .mvn { margin-bottom: 0px !important; }
+.mls, .mas, .mhs { margin-left: 5px !important; }
+.mlm, .mam, .mhm { margin-left: 10px !important; }
+.mll, .mal, .mhl { margin-left: 20px !important; }
+.mln, .man, .mhn { margin-left: 0px !important; }
 
-/* --- (text) --- */
-	
-/*p, td, div {
-	margin: 5px 10px;
-	font-family: Verdana, Geneva, Lucida, Helvetica, Arial, sans-serif;
-	font-size: 12px;
-	line-height: 1.2em;
-	}
-
-h1, h2, h3, h4 {
-	margin: 10px;
-	padding: 0px;
-	font-family: 'trebuchet ms', 'Gill Sans', Verdana, Geneva, Helvetica, Arial, sans-serif;
-	}
-
-h1 {
-	text-align: center;
-	font-size: 1.9em;
-	line-height: 1.5em;
-	letter-spacing: 0.1em;
-	font-style: italic;
-	margin-top: 0;
-	}
-
-h2 {
-	font-size: 1.6em;
-	}
-
-h3 {
-	font-size: 1.4em;
-	}
-
-h4 {
-	font-size: 1.2em;
-	}
-
-div.spacer {
-	clear: both;
-	}
-
-a:link {
-	text-decoration: underline;
-	}
-
-a:visited {
-	text-decoration: underline;
-	}
-
-a:hover {
-	text-decoration: underline;
-	}
-
-/* --- (layout) --- */
-
-body {
-	margin: 10px 20px 10px 5%;
-	}
-	
-#content {
-	margin-left: 140px;
-	background-color: #fff;
-	padding: 20px;
-	}
-	
-hr {
-	border-top: 1px dotted #ccc;
-	border-left: none;
-	border-right: none;
-	border-bottom: none;
-	color: transparent;
-	background-color: transparent;
-	}
-	
-ul.hint {
-	margin: 0 0 0 1em;
-	padding: 3px 0px 3px 12px;
-	list-style-type: square;
-	}
-
-li	{
-	margin: 0 0 3px 0;
-	padding: 0;
-	font-family: Verdana, Geneva, Lucida, Helvetica, Arial, sans-serif;
-	font-size: 12px;
-	color: #000;
-	}*/
-
-/* --- (navigation) --- */
-/*#nav {
-	position: relative;
-	border-top: #666 dotted 1px;
-	border-bottom: #666 dotted 1px;
-	border-left: #333 solid 2px;
-	border-right: #333 solid 2px;
-	width: 150px;
-	float: left;
-	padding: 0px;
-	margin: 0px;
-	margin-left: -2.5%;
-	color: #333;
-	background-color: #fff;
-	}
-
-div#nav a {
-	display: block;
-	margin: 3px 2px;
-	padding-left: 18px;
-	}
-
-
-div#nav a:link, div#nav a:visited {
-	text-decoration: none;
-	border-bottom: 1px solid;
-	border-left: 15px solid;
-	padding-left: 3px;
-	}
-
-div#nav a:hover {
-	text-decoration: none;
-	border-bottom: 1px solid;
-	border-left: 15px solid;
-	padding-left: 3px;
-	}*/
-
-/* ----(header graphic)---- */
-
-/*img.logo {
-	margin: 0px auto;
-	display: block;
-	}
-
-/* ----(footer)---- */
-
-#footer {
-	float: right;
-	text-align: right;
-	}
-
-#footer, #footer a:link,  #footer a:hover, #footer a:visited {
-	font-size: 10px;
-	color: #000;
-	}*/
-
-/* ----(data table style)---- */
-/*
-th {
-	font-size: 11px;
-	}
-
-td {
-	font-size: 12px;
-	padding: 5px;
-	}
-	
-tr.even td, td.even {
-	background-color: #eee;
-	}
-		
-tr.odd td, td.even {
-	background-color: #fff;
-	}
-	
-td.topstats {
-	font-weight: bold;
-	}
-	
-td.inning {
-	font-weight: bold;
-	font-style: italic;
-	text-align: center;
-	}
-	
-table.stats td {
-	text-align: right;
-	}
-*/
+.hint {
+	color: gray;
+	font-size: .75em;
+}
