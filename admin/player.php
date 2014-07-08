@@ -159,12 +159,12 @@ if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
         Player Bio:<br>
         <textarea name="txtPlayerBio" maxlength="255" cols="25" rows="4" wrap="VIRTUAL"></textarea></td>
       <td>
-        <br><button type="SUBMIT" name="Add" value="">Add >></button></td>
+        <br><button type="SUBMIT" name="Add" class="expand">Add >></button></td>
     </tr>
 
     <tr>
       <td><font face="Arial"><strong>Remove Player:</strong></td>
-      <td colspan="3">
+      <td colspan="2">
         <select name="cboPlayer" size="1">
           <option value=""></option>
 <?php
@@ -181,7 +181,10 @@ if ($recPlayer) {
 }
 ?>
         </select>
-        <button type="SUBMIT" name="Delete" value="">Delete >></button></td>
+      </td>
+      <td>
+        <button type="SUBMIT" name="Delete" class="expand secondary">Delete >></button>
+      </td>
     </tr>
 
     <tr valign="CENTER">
@@ -229,7 +232,7 @@ if (isset($_POST['cboPlayerNum']) && $_POST['cboPlayerNum'] <> '') {
         <textarea name="txtPlayerBioU" maxlength="255" cols="25" rows="4" wrap="VIRTUAL"><?php echo
         stripslashes($rowPlayer['Bio'])?></textarea></td>
       <td>
-        <br><button type="SUBMIT" name="Update" value="">Update >></button></td>
+        <br><button type="SUBMIT" name="Update" class="expand">Update >></button></td>
   </table>
 </form>
 <hr>

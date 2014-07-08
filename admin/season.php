@@ -86,21 +86,21 @@ if (isset($_POST['Delete']) && $demo_mode == '0') {
     exit;
   }
   $result = $pdo->query('SELECT * FROM game WHERE SeasonID = '.addslashes($_POST['cboSeason']));
-  $row = mysql_fetch_assoc($result);
+  $row = $result->fetch(PDO::FETCH_ASSOC);
   if ($row) {
       print ('<h2>Failed to delete season from DB<br>There are still games for this season in the game table!</h2>');
       require('../config/footer.php');
       exit;
   }
   $result = $pdo->query('SELECT * FROM player WHERE SeasonID = '.addslashes($_POST['cboSeason']));
-  $row = mysql_fetch_assoc($result);
+  $row = $result->fetch(PDO::FETCH_ASSOC);
   if ($row) {
       print ('<h2>Failed to delete season from DB<br>There are still players for this season in the player table!</h2>');
       require('../config/footer.php');
       exit;
   }
   $result = $pdo->query('SELECT Description FROM season WHERE ID = '.addslashes($_POST['cboSeason']).' AND DefaultSeason = 1');
-  $row = mysql_fetch_assoc($result);
+  $row = $result->fetch(PDO::FETCH_ASSOC);
   if ($row) {
     print ('<h2>You can\'t delete "'.$row['Description'].'", it is the current season!</h2>');
     require('../config/footer.php');
@@ -138,7 +138,7 @@ $recSeason = $pdo->query('SELECT * FROM season ORDER BY ID') ;
           <option value=""></option>
 <?php
 if ($recSeason) {
-  while ($rowSeason = mysql_fetch_assoc($recSeason)) {
+  while ($rowSeason = $recSeason->fetch(PDO::FETCH_ASSOC)) {
     if ($rowSeason['DefaultSeason'] == '1') {
       $curr = '[Current]';
     } else {

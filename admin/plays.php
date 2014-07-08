@@ -186,11 +186,16 @@ if ($recPlayType) {
         </select></td>
     </tr>
     <tr valign="CENTER">
+      <td></td>
       <td>
-        <input type="SUBMIT" name="Add" value="Add >>"></td>
+        <button type="SUBMIT" name="Add" class="expand">Add >></button></td>
+      <td>
+    </tr>
+    <tr>
+      <td></td>
       <td>
       Game - Inning - Player - Play<br>
-      <select name="lstPlays" size="12">
+      <select name="lstPlays">
 <?php
 if ($recPlays) {
   while ($rowPlays = $recPlays->fetch(PDO::FETCH_ASSOC)) {
@@ -212,8 +217,11 @@ if ($recPlays) {
 ?>
           <option selected value=""></option>
       </select></td>
+    </tr>
+    <tr>
+      <td></td>
       <td>
-        <input type="SUBMIT" name="Delete" value="Delete >>"></td>
+        <button type="SUBMIT" name="Delete" class="expand secondary">Delete >></button></td>
       <td>
     </tr>
   </table>

@@ -195,7 +195,8 @@ if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
         <textarea name="txtNotes" cols="30" rows="4" wrap="VIRTUAL"><?php if (isset($_POST['txtNotes']) && $_POST['txtNotes'] <> '') { echo stripslashes($_POST['txtNotes']); } ?></textarea>
          </td>
       <td> 
-        <button type="SUBMIT" name="Add" value="">Add >></button> </td>
+        <button type="SUBMIT" name="Add" class="expand">Add >></button> 
+      </td>
     </tr>
 
     <tr>
@@ -319,7 +320,7 @@ if (isset($_POST['cboGameU']) && $_POST['cboGameU'] <> '') {
         Game Notes:<br>
         <textarea name="txtNotesU" cols="30" rows="4" wrap="VIRTUAL"><?php echo $rowGame['Notes']?></textarea> </td>
       <td> 
-        <button type="SUBMIT" name="Update" value="">Update >></button> </td>
+        <button type="SUBMIT" name="Update" class="expand">Update >></button> </td>
     </tr>
 <?php
 }
