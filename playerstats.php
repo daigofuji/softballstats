@@ -78,7 +78,7 @@ $nTotalAve = 0;
     <th>3B</th>
     <th>HR</th>
     <th>RBI </th>
-    <th>BB</th>
+    <th>BB/HBP</th>
     <th>K</th>
     <th>Er</th>
     <th>SB</th>
@@ -172,6 +172,9 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
         break;
       case 27:
         $nSBs++;
+        break;
+      case 29:
+        $nWalks++;
         break;
     }
     $recType = $pdo->query('SELECT * FROM type WHERE ID = '.$rowPlays['TypeID']);
@@ -435,7 +438,9 @@ if (!isset($_GET['ID'])) {
    <td valign="top"><hr><strong><?php echo $nTotalStrikeOuts?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalErrors?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalSBs?></strong></td>
+  <?php if ($show_np) { ?>
    <td valign="top"><hr><strong><?php echo $nTotalNPs?></strong></td>
+  <?php } ?>
    <td valign="top"><hr><strong>
    <?php if ($i <> 0) { echo substr(($nTotalSlug / $i),0,5); } else { echo '0'; } ?></strong></td>
    <td valign="top"><hr><strong>
