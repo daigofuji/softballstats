@@ -1,6 +1,7 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+// comment those out for dev
+// error_reporting(E_ALL);
+// ini_set('display_errors', '1');
 
 // General Softball Stuff
   // Name used in page titles
@@ -26,10 +27,10 @@ ini_set('display_errors', '1');
   $admin_pass = 'adminpass';
   
   // Show the Admin links in the navagation bar.  '1' = show, '0' = hide
-  $show_admin_links = '1';
+  $show_admin_links = '0';
 
   // Number of games in a season 
-  $games_in_season = '14';
+  $games_in_season = '12';
 
 
 // Softball Database Stuff
@@ -117,5 +118,3 @@ the credentials required.<p>
   }
 }
 ?>
-
-
