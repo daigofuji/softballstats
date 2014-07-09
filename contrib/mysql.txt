@@ -178,31 +178,33 @@ CREATE TABLE type (
 #
 # Dumping data for table 'type'
 #
-
-INSERT INTO type VALUES (1,'Single',1);
-INSERT INTO type VALUES (2,'Double',1);
-INSERT INTO type VALUES (3,'Triple',1);
-INSERT INTO type VALUES (4,'Home Run',1);
-INSERT INTO type VALUES (5,'RBI',4);
-INSERT INTO type VALUES (6,'Fouled Out',2);
-INSERT INTO type VALUES (7,'Strike Out',2);
-INSERT INTO type VALUES (8,'Ground Out',2);
-INSERT INTO type VALUES (9,'Double Play',2);
-INSERT INTO type VALUES (10,'Fielders Choice',2);
-INSERT INTO type VALUES (11,'Error (Pitcher)',3);
-INSERT INTO type VALUES (12,'Error (Catcher)',3);
-INSERT INTO type VALUES (13,'Error (1st Base)',3);
-INSERT INTO type VALUES (14,'Error (2nd Base)',3);
-INSERT INTO type VALUES (15,'Error (3rd Base)',3);
-INSERT INTO type VALUES (16,'Error (Short Stop)',3);
-INSERT INTO type VALUES (17,'Error (Left Field)',3);
-INSERT INTO type VALUES (18,'Error (Left Center Field)',3);
-INSERT INTO type VALUES (19,'Error (Right Center Field)',3);
-INSERT INTO type VALUES (20,'Error (Right Field)',3);
-INSERT INTO type VALUES (21,'Walk',4);
-INSERT INTO type VALUES (22,'Reached on Error',2);
-INSERT INTO type VALUES (23,'Sacrifice',4);
-INSERT INTO type VALUES (24,'Run Scored',4);
-INSERT INTO type VALUES (25,'Nice Play',3);
-INSERT INTO type VALUES (26,'Pop Out',2);
-
+INSERT INTO `type` (`ID`, `Description`, `HitOrOutID`) VALUES
+(1, 'Single', 1),
+(2, 'Double', 1),
+(3, 'Triple', 1),
+(4, 'Home Run', 1),
+(5, 'RBI', 4),
+(6, 'Fouled Out', 2),
+(7, 'Strike Out', 2),
+(8, 'Ground Out', 2),
+(9, 'Double Play', 2),
+(10, 'Fielders Choice', 2),
+(11, 'Error (Pitcher)', 3),
+(12, 'Error (Catcher)', 3),
+(13, 'Error (1st Base)', 3),
+(14, 'Error (2nd Base)', 3),
+(15, 'Error (3rd Base)', 3),
+(16, 'Error (Short Stop)', 3),
+(17, 'Error (Left Field)', 3),
+(18, 'Error (Left Center Field)', 3),
+(19, 'Error (Right Center Field)', 3),
+(20, 'Error (Right Field)', 3),
+(21, 'Walk', 4),
+(22, 'Reached on Error', 2),
+(23, 'Sacrifice', 4),
+(24, 'Run Scored', 4),
+(25, 'Nice Play', 3),
+(26, 'Fly Out', 2),
+(27, 'Stolen Base', 4),
+(28, 'Caught Stealing/Out Running', 4),
+(29, 'Hit By Pitch', 4);

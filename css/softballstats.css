@@ -42,3 +42,7 @@ Written by David Carlo. This CSS file was created by Daigo Fujiwara.
 	color: gray;
 	font-size: .75em;
 }
+
+.topstats {
+	font-weight: bold;
+}

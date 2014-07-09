@@ -199,24 +199,6 @@ if (!isset($_POST['cboSeason']) || $_POST['cboSeason'] == '') {
       </td>
     </tr>
 
-    <tr>
-      <td> <strong>Remove Game:</strong> </td>
-      <td colspan="3"> 
-        <select name="cboGame" size="1">
-          <option value=""></option>
-<?php
-if ($recGame) {
-  while ($rowGame = $recGame->fetch(PDO::FETCH_ASSOC)) {
-?>
-          <option value="<?php echo $rowGame['ID']?>"><?php echo stripslashes($rowGame['OpposingTeam'])?> [<?php echo date('m/d/y h:i a',
-          strtotime($rowGame['GameDate']))?>]</option>
-<?php
-  }
-}
-?>
-        </select>
-        <button type="submit" name="Delete" value="">Delete >></button> </td>
-    </tr>
 
     <tr>
       <td> <strong>Update Game:</strong> </td>
@@ -224,9 +206,9 @@ if ($recGame) {
         <select name="cboGameU" size="1" onchange="document.game.submit()">
           <option value=""></option>
 <?php
-if ($recGame->fetchColumn() <> 0) {
-  mysql_data_seek($recGame, 0);
-  if ($recGame) {
+//if ($recGame->fetchColumn() <> 0) {
+  //mysql_data_seek($recGame, 0);
+//  if ($recGame) {
     while ($rowGame = $recGame->fetch(PDO::FETCH_ASSOC)) {
       if (isset($_POST['cboGameU']) && $_POST['cboGameU'] == $rowGame['ID']) {
         $selected = 'SELECTED ';
@@ -238,8 +220,8 @@ if ($recGame->fetchColumn() <> 0) {
           strtotime($rowGame['GameDate']))?>]</option>
 <?php
     }
-  }
-}
+//   }
+// }
 ?>
         </select>
     </tr>
@@ -325,6 +307,25 @@ if (isset($_POST['cboGameU']) && $_POST['cboGameU'] <> '') {
 <?php
 }
 ?>
+    <tr>
+      <td> <strong>Remove Game:</strong> </td>
+      <td colspan="3"> 
+        <select name="cboGame" size="1">
+          <option value=""></option>
+<?php
+if ($recGame) {
+  while ($rowGame2 = $recGame->fetch(PDO::FETCH_ASSOC)) {
+?>
+          <option value="<?php echo $rowGame2['ID']?>"><?php echo stripslashes($rowGame2['OpposingTeam'])?> [<?php echo date('m/d/y h:i a',
+          strtotime($rowGame2['GameDate']))?>]</option>
+<?php
+  }
+}
+?>
+        </select>
+        <button type="submit" name="Delete" value="">Delete >></button> </td>
+    </tr>
+
   </table>
 </form>
 <hr>

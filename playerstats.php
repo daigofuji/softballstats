@@ -62,6 +62,7 @@ $nTotalRBIs = 0;
 $nTotalWalks = 0;
 $nTotalStrikeOuts = 0;
 $nTotalErrors = 0;
+$nTotalSBs = 0;
 $nTotalNPs = 0;
 $nTotalSlug = 0;
 $nTotalAve = 0;
@@ -80,6 +81,7 @@ $nTotalAve = 0;
     <th>BB</th>
     <th>K</th>
     <th>Er</th>
+    <th>SB</th>
 <?php if ($show_np) { ?>
     <th>NPs*</th>
 <?php } ?>
@@ -89,20 +91,20 @@ $nTotalAve = 0;
 <?php
 $i = 0;
 // Reset max stats
-$nRunsMax = $nHitsMax = $nRBIsMax = $nWalksMax = $nStrikeOutsMax = $nHomeRunsMax = $nErrorsMax = $nAverageMax = $nDoublesMax = 0;
+$nRunsMax = $nHitsMax = $nRBIsMax = $nWalksMax = $nStrikeOutsMax = $nHomeRunsMax = $nErrorsMax = $nSBsMax = $nAverageMax = $nDoublesMax = 0;
 $nTriplesMax = $nNPsMax = $nSlugMax = $nRunsMax = $nHitsMax = $nRBIsMax = $nWalksMax = $nStrikeOutsMax = $nHomeRunsMax = $nErrorsMax = 0;
 $nAverageMax = $nDoublesMax = $nTriplesMax = $nNPsMax = $nSlugMax = 0;
 // Reset max stats ID
-$sRunsMaxID = $sHitsMaxID = $sRBIsMaxID = $sWalksMaxID = $sStrikeOutsMaxID = $sHomeRunsMaxID = $sErrorsMaxID = $sAverageMaxID = NULL;
+$sRunsMaxID = $sHitsMaxID = $sRBIsMaxID = $sWalksMaxID = $sStrikeOutsMaxID = $sHomeRunsMaxID = $sErrorsMaxID = $sSBsMaxID = $sAverageMaxID = NULL;
 $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = $sRunsMaxID = $sHitsMaxID = $sRBIsMaxID = $sWalksMaxID = $sStrikeOutsMaxID = NULL;
-$sHomeRunsMaxID = $sErrorsMaxID = $sAverageMaxID = $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = NULL;
+$sHomeRunsMaxID = $sErrorsMaxID = $sSBsMaxID = $sAverageMaxID = $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = NULL;
 // Calculate Stats for each Player
 while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   $i++;
   $recPlays=$pdo->query('SELECT * FROM plays WHERE PlayerID = '.$rowPlayer['ID'].' AND SeasonID = '.$season_id
             .' ORDER BY GameID, Inning, PlayerID') ;
   // Reset player stats
-  $nAtBats = $nRuns = $nHits = $nRBIs = $nWalks = $nStrikeOuts = $nHomeRuns = $nErrors = $nAverage = $nDoubles = $nTriples = $nNPs = 0;
+  $nAtBats = $nRuns = $nHits = $nRBIs = $nWalks = $nStrikeOuts = $nHomeRuns = $nErrors = $nSBs = $nAverage = $nDoubles = $nTriples = $nNPs = 0;
   $nSlug = $nGames = 0;
   // Reset game number
   $nGameNumber = NULL;
@@ -167,6 +169,9 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
         break;
       case 25:
         $nNPs++;
+        break;
+      case 27:
+        $nSBs++;
         break;
     }
     $recType = $pdo->query('SELECT * FROM type WHERE ID = '.$rowPlays['TypeID']);
@@ -264,6 +269,12 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
     } elseif ($nErrors == $nErrorsMax) {
       $sErrorsMaxID = NULL;
     }
+    if ($nSBs > $nSBsMax) {
+      $nSBsMax = $nSBs;
+      $sSBsMaxID = $rowPlayer['ID'];
+    } elseif ($nSBs == $nSBsMax) {
+      $sSBsMaxID = NULL;
+    }
     if ($nNPs > $nNPsMax) {
       $nNPsMax = $nNPs;
       $sNPsMaxID = $rowPlayer['ID'];
@@ -285,7 +296,7 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   }
 
   $StatTemp[$rowPlayer['ID']]['PlayerID'] = $rowPlayer['ID'];
-  $StatTemp[$rowPlayer['ID']]['PlayerName'] = $rowPlayer['LastName'].', '.$rowPlayer['FirstName'];
+  $StatTemp[$rowPlayer['ID']]['PlayerName'] = $rowPlayer['LastName'].', '.$rowPlayer['FirstName'].' ('.$rowPlayer['ID'].')';
   $StatTemp[$rowPlayer['ID']]['Games'] = $nGames;
   $StatTemp[$rowPlayer['ID']]['AtBats'] = $nAtBats;
   $StatTemp[$rowPlayer['ID']]['Runs'] = $nRuns;
@@ -297,6 +308,7 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   $StatTemp[$rowPlayer['ID']]['Walks'] = $nWalks;
   $StatTemp[$rowPlayer['ID']]['StrikeOuts'] = $nStrikeOuts;
   $StatTemp[$rowPlayer['ID']]['Errors'] = $nErrors;
+  $StatTemp[$rowPlayer['ID']]['SBs'] = $nSBs;
   $StatTemp[$rowPlayer['ID']]['NPs'] = $nNPs;
   $StatTemp[$rowPlayer['ID']]['Slug'] = $sSlug;
   $StatTemp[$rowPlayer['ID']]['Average'] = $sAverage;
@@ -314,6 +326,7 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
     $nTotalWalks = $nTotalWalks + $nWalks;
     $nTotalStrikeOuts = $nTotalStrikeOuts + $nStrikeOuts;
     $nTotalErrors = $nTotalErrors + $nErrors;
+    $nTotalSBs = $nTotalSBs + $nSBs;
     $nTotalNPs = $nTotalNPs + $nNPs;
     $nTotalSlug = $nTotalSlug + $nSlug;
     $nTotalAve = $nTotalAve + $nAverage;
@@ -380,6 +393,11 @@ if (isset($StatTemp)) {
     <?php } else { ?>
       <td valign="top"> <?php echo $tmp['Errors']?> </td>
     <?php } ?>
+    <?php if ($tmp['PlayerID'] == $sSBsMaxID) { ?>
+      <td valign="top" class="topstats"><?php echo $tmp['SBs']?> </td>
+    <?php } else { ?>
+      <td valign="top"> <?php echo $tmp['SBs']?> </td>
+    <?php } ?>
     <?php if ($show_np) { ?>
     <?php   if ($tmp['PlayerID'] == $sNPsMaxID) { ?>
       <td valign="top" class="topstats"><?php echo $tmp['NPs']?> </td>
@@ -416,6 +434,7 @@ if (!isset($_GET['ID'])) {
    <td valign="top"><hr><strong><?php echo $nTotalWalks?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalStrikeOuts?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalErrors?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalSBs?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalNPs?></strong></td>
    <td valign="top"><hr><strong>
    <?php if ($i <> 0) { echo substr(($nTotalSlug / $i),0,5); } else { echo '0'; } ?></strong></td>
