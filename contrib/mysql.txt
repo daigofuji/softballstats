@@ -1,183 +1,154 @@
-# MySQL dump 8.16
-#
-# Host: localhost    Database: softballstats
-#--------------------------------------------------------
-# Server version	3.23.44
+-- phpMyAdmin SQL Dump
+-- version 4.1.12
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost:8889
+-- Generation Time: Jul 17, 2014 at 02:58 PM
+-- Server version: 5.5.34
+-- PHP Version: 5.5.10
 
-#
-# Table structure for table 'game'
-#
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
 
-CREATE TABLE game (
-  ID int(11) NOT NULL auto_increment,
-  OpposingTeam varchar(50) NOT NULL default '',
-  Field varchar(50) NOT NULL default '',
-  FieldNumber int(3) NOT NULL default '1',
-  GameDate datetime NOT NULL default '0000-00-00 00:00:00',
-  MakeUpDate datetime default NULL,
-  MakeUpField varchar(50) default NULL,
-  MakeUpFieldNumber int(3) default NULL,
-  OpposingTeamScore int(11) default NULL,
-  SeasonID int(11) NOT NULL default '0',
-  Notes text,
-  PRIMARY KEY  (ID)
-) ENGINE=MyISAM;
+--
+-- Database: `softballstats`
+--
 
-#
-# Dumping data for table 'game'
-#
+-- --------------------------------------------------------
 
-INSERT INTO game VALUES (1,'Orioles','Camden Yards',1,'2002-07-27 13:00:00',NULL,NULL,NULL,6,1,NULL);
-INSERT INTO game VALUES (2,'Orioles','Camden Yards',1,'2002-07-27 14:00:00',NULL,NULL,NULL,1,1,'Cal Ripken returns to baseball.\r\n\r\nMore news at <a href=http://espn.com>ESPN</a>');
-INSERT INTO game VALUES (3,'Yankees','Yankee Stadium',1,'2002-08-03 15:00:00','2002-08-17 15:00:00','Home Field',2,NULL,1,NULL);
-INSERT INTO game VALUES (4,'Yankees','Yankee Stadium',1,'2002-08-03 16:00:00','2002-08-17 16:00:00','Home Field',2,NULL,1,NULL);
-INSERT INTO game VALUES (5,'Blue Jays','SkyDome',4,'2002-08-10 13:00:00',NULL,NULL,NULL,NULL,1,NULL);
-INSERT INTO game VALUES (6,'Blue Jays','SkyDome',4,'2002-08-10 14:00:00',NULL,NULL,NULL,NULL,1,NULL);
+--
+-- Table structure for table `game`
+--
 
-#
-# Table structure for table 'hitorout'
-#
+CREATE TABLE `game` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `OpposingTeam` varchar(50) NOT NULL DEFAULT '',
+  `Field` varchar(50) NOT NULL DEFAULT '',
+  `FieldNumber` int(3) NOT NULL DEFAULT '1',
+  `GameDate` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `MakeUpDate` datetime DEFAULT NULL,
+  `MakeUpField` varchar(50) DEFAULT NULL,
+  `MakeUpFieldNumber` int(3) DEFAULT NULL,
+  `OpposingTeamScore` int(11) DEFAULT NULL,
+  `SeasonID` int(11) NOT NULL DEFAULT '0',
+  `Notes` text,
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
-CREATE TABLE hitorout (
-  ID int(11) NOT NULL auto_increment,
-  Description char(50) NOT NULL default '',
-  PRIMARY KEY  (ID)
-) ENGINE=MyISAM;
+--
+-- Dumping data for table `game`
+--
 
-#
-# Dumping data for table 'hitorout'
-#
+INSERT INTO `game` (`ID`, `OpposingTeam`, `Field`, `FieldNumber`, `GameDate`, `MakeUpDate`, `MakeUpField`, `MakeUpFieldNumber`, `OpposingTeamScore`, `SeasonID`, `Notes`) VALUES
+(1, 'vs Yankees', 'Fenway Park', 1, '2014-04-01 17:45:00', NULL, NULL, NULL, 1, 3, 'First Game of the season.');
 
-INSERT INTO hitorout VALUES (1,'Hit');
-INSERT INTO hitorout VALUES (2,'Out');
-INSERT INTO hitorout VALUES (3,'Defensive');
-INSERT INTO hitorout VALUES (4,'Don\'t Count Against Average');
+-- --------------------------------------------------------
 
-#
-# Table structure for table 'player'
-#
+--
+-- Table structure for table `hitorout`
+--
 
-CREATE TABLE player (
-  ID int(11) NOT NULL default '0',
-  FirstName char(50) NOT NULL default '',
-  LastName char(50) NOT NULL default '',
-  Bio char(255) default NULL,
-  EMail char(100) default NULL,
-  SeasonID int(11) NOT NULL default '0',
-  UNIQUE KEY ID (ID,SeasonID),
-  KEY SeasonID (SeasonID)
-) ENGINE=MyISAM;
+CREATE TABLE `hitorout` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Description` char(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
-#
-# Dumping data for table 'player'
-#
+--
+-- Dumping data for table `hitorout`
+--
 
-INSERT INTO player VALUES (1,'John','One','The first player on the team.\r\nJohn\\\'s the Pitcher.','j1@domain.com',1);
-INSERT INTO player VALUES (2,'Bob','Two','Bob is the catcher, and he\\\'s the worst player....ever\r\n\r\n:)','b2@domain.com',1);
-INSERT INTO player VALUES (3,'Jim','Three','Jim is stuck in the 80s and does not have email.','',1);
-INSERT INTO player VALUES (100,'Mike','Tester','','',1);
+INSERT INTO `hitorout` (`ID`, `Description`) VALUES
+(1, 'Hit'),
+(2, 'Out'),
+(3, 'Defensive'),
+(4, 'Don''t Count Against Average');
 
-#
-# Table structure for table 'plays'
-#
+-- --------------------------------------------------------
 
-CREATE TABLE plays (
-  ID bigint(11) NOT NULL auto_increment,
-  GameID int(11) NOT NULL default '0',
-  Inning int(11) NOT NULL default '0',
-  PlayerID int(11) NOT NULL default '0',
-  TypeID int(11) NOT NULL default '0',
-  DateAdded datetime NOT NULL default '0000-00-00 00:00:00',
-  SeasonID int(11) NOT NULL default '0',
-  PRIMARY KEY  (ID)
-) ENGINE=MyISAM;
+--
+-- Table structure for table `player`
+--
 
-#
-# Dumping data for table 'plays'
-#
+CREATE TABLE `player` (
+  `ID` int(11) NOT NULL DEFAULT '0',
+  `FirstName` char(50) NOT NULL DEFAULT '',
+  `LastName` char(50) NOT NULL DEFAULT '',
+  `Bio` char(255) DEFAULT NULL,
+  `EMail` char(100) DEFAULT NULL,
+  `SeasonID` int(11) NOT NULL DEFAULT '0',
+  UNIQUE KEY `ID` (`ID`,`SeasonID`),
+  KEY `SeasonID` (`SeasonID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-INSERT INTO plays VALUES (1,1,1,1,2,'2002-07-24 04:25:00',1);
-INSERT INTO plays VALUES (2,1,1,2,26,'2002-07-24 04:25:20',1);
-INSERT INTO plays VALUES (3,1,1,3,1,'2002-07-24 04:26:07',1);
-INSERT INTO plays VALUES (4,1,1,3,5,'2002-07-24 04:26:29',1);
-INSERT INTO plays VALUES (5,1,1,1,24,'2002-07-24 04:26:43',1);
-INSERT INTO plays VALUES (6,1,1,100,8,'2002-07-24 04:27:05',1);
-INSERT INTO plays VALUES (7,1,1,1,21,'2002-07-24 04:27:24',1);
-INSERT INTO plays VALUES (8,1,1,2,7,'2002-07-24 04:28:18',1);
-INSERT INTO plays VALUES (9,1,2,3,8,'2002-07-24 04:30:04',1);
-INSERT INTO plays VALUES (11,1,2,100,1,'2002-07-24 04:31:17',1);
-INSERT INTO plays VALUES (12,1,2,1,26,'2002-07-24 04:32:00',1);
-INSERT INTO plays VALUES (13,1,2,2,8,'2002-07-24 04:32:13',1);
-INSERT INTO plays VALUES (15,1,3,3,2,'2002-07-24 04:33:42',1);
-INSERT INTO plays VALUES (16,1,3,100,1,'2002-07-24 04:33:53',1);
-INSERT INTO plays VALUES (17,1,3,1,8,'2002-07-24 04:34:13',1);
-INSERT INTO plays VALUES (18,1,3,2,23,'2002-07-24 04:34:28',1);
-INSERT INTO plays VALUES (19,1,3,2,5,'2002-07-24 04:34:38',1);
-INSERT INTO plays VALUES (20,1,3,3,24,'2002-07-24 04:34:53',1);
-INSERT INTO plays VALUES (21,1,3,100,26,'2002-07-24 04:35:41',1);
-INSERT INTO plays VALUES (22,1,4,1,8,'2002-07-24 04:36:29',1);
-INSERT INTO plays VALUES (23,1,4,2,8,'2002-07-24 04:36:38',1);
-INSERT INTO plays VALUES (24,1,4,3,26,'2002-07-24 04:37:00',1);
-INSERT INTO plays VALUES (25,1,5,100,1,'2002-07-24 05:04:42',1);
-INSERT INTO plays VALUES (26,1,5,1,1,'2002-07-24 05:04:54',1);
-INSERT INTO plays VALUES (27,1,5,2,1,'2002-07-24 05:05:09',1);
-INSERT INTO plays VALUES (28,1,5,3,4,'2002-07-24 05:05:31',1);
-INSERT INTO plays VALUES (29,1,5,3,5,'2002-07-24 05:05:44',1);
-INSERT INTO plays VALUES (30,1,5,3,5,'2002-07-24 05:05:51',1);
-INSERT INTO plays VALUES (31,1,5,3,5,'2002-07-24 05:05:57',1);
-INSERT INTO plays VALUES (32,1,5,3,5,'2002-07-24 05:06:07',1);
-INSERT INTO plays VALUES (33,1,5,3,24,'2002-07-24 05:06:21',1);
-INSERT INTO plays VALUES (34,1,5,1,24,'2002-07-24 05:06:42',1);
-INSERT INTO plays VALUES (35,1,5,2,24,'2002-07-24 05:07:01',1);
-INSERT INTO plays VALUES (36,1,5,100,24,'2002-07-24 05:07:21',1);
-INSERT INTO plays VALUES (37,1,5,100,1,'2002-07-24 05:10:29',1);
-INSERT INTO plays VALUES (38,1,5,1,10,'2002-07-24 05:12:12',1);
-INSERT INTO plays VALUES (39,1,5,2,8,'2002-07-24 05:13:13',1);
-INSERT INTO plays VALUES (40,1,5,3,26,'2002-07-24 05:13:30',1);
-INSERT INTO plays VALUES (41,1,5,2,12,'2002-07-24 05:14:27',1);
-INSERT INTO plays VALUES (42,1,5,1,25,'2002-07-24 05:14:42',1);
-INSERT INTO plays VALUES (43,1,6,100,1,'2002-07-24 05:15:54',1);
-INSERT INTO plays VALUES (44,1,6,1,3,'2002-07-24 05:16:07',1);
-INSERT INTO plays VALUES (45,1,6,1,5,'2002-07-24 05:16:16',1);
-INSERT INTO plays VALUES (46,1,6,100,24,'2002-07-24 05:16:26',1);
-INSERT INTO plays VALUES (47,1,6,2,8,'2002-07-24 05:17:15',1);
-INSERT INTO plays VALUES (48,1,6,3,26,'2002-07-24 05:17:35',1);
-INSERT INTO plays VALUES (49,1,6,100,10,'2002-07-24 05:17:57',1);
-INSERT INTO plays VALUES (50,1,7,1,8,'2002-07-24 05:19:52',1);
-INSERT INTO plays VALUES (51,1,7,2,8,'2002-07-24 05:20:03',1);
-INSERT INTO plays VALUES (52,1,7,3,8,'2002-07-24 05:20:11',1);
+--
+-- Dumping data for table `player`
+--
 
-#
-# Table structure for table 'season'
-#
+INSERT INTO `player` (`ID`, `FirstName`, `LastName`, `Bio`, `EMail`, `SeasonID`) VALUES
+(9, 'Ted', 'Williams', '', '', 1);
 
-CREATE TABLE season (
-  ID int(11) NOT NULL auto_increment,
-  Description char(50) NOT NULL default '',
-  DefaultSeason int(1) NOT NULL default '0',
-  PRIMARY KEY  (ID)
-) ENGINE=MyISAM;
+-- --------------------------------------------------------
 
-#
-# Dumping data for table 'season'
-#
+--
+-- Table structure for table `plays`
+--
 
-INSERT INTO season VALUES (1,'Fall 2002',1);
+CREATE TABLE `plays` (
+  `ID` bigint(11) NOT NULL AUTO_INCREMENT,
+  `GameID` int(11) NOT NULL DEFAULT '0',
+  `Inning` int(11) NOT NULL DEFAULT '0',
+  `PlayerID` int(11) NOT NULL DEFAULT '0',
+  `TypeID` int(11) NOT NULL DEFAULT '0',
+  `DateAdded` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `SeasonID` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=236 ;
 
-#
-# Table structure for table 'type'
-#
+--
+-- Dumping data for table `plays`
+--
 
-CREATE TABLE type (
-  ID int(11) NOT NULL default '0',
-  Description char(50) NOT NULL default '',
-  HitOrOutID int(11) NOT NULL default '0',
-  PRIMARY KEY  (ID)
-) ENGINE=MyISAM;
+INSERT INTO `plays` (`ID`, `GameID`, `Inning`, `PlayerID`, `TypeID`, `DateAdded`, `SeasonID`) VALUES
+(1, 1, 1, 9, 4, '2014-07-09 03:55:21', 1);
 
-#
-# Dumping data for table 'type'
-#
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `season`
+--
+
+CREATE TABLE `season` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Description` char(50) NOT NULL DEFAULT '',
+  `DefaultSeason` int(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `season`
+--
+
+INSERT INTO `season` (`ID`, `Description`, `DefaultSeason`) VALUES
+(1, '2014 Summer League', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `type`
+--
+
+CREATE TABLE `type` (
+  `ID` int(11) NOT NULL DEFAULT '0',
+  `Description` char(50) NOT NULL DEFAULT '',
+  `HitOrOutID` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `type`
+--
+
 INSERT INTO `type` (`ID`, `Description`, `HitOrOutID`) VALUES
 (1, 'Single', 1),
 (2, 'Double', 1),
@@ -189,16 +160,7 @@ INSERT INTO `type` (`ID`, `Description`, `HitOrOutID`) VALUES
 (8, 'Ground Out', 2),
 (9, 'Double Play', 2),
 (10, 'Fielders Choice', 2),
-(11, 'Error (Pitcher)', 3),
-(12, 'Error (Catcher)', 3),
-(13, 'Error (1st Base)', 3),
-(14, 'Error (2nd Base)', 3),
-(15, 'Error (3rd Base)', 3),
-(16, 'Error (Short Stop)', 3),
-(17, 'Error (Left Field)', 3),
-(18, 'Error (Left Center Field)', 3),
-(19, 'Error (Right Center Field)', 3),
-(20, 'Error (Right Field)', 3),
+(11, 'Error (Fielding)', 3),
 (21, 'Walk', 4),
 (22, 'Reached on Error', 2),
 (23, 'Sacrifice', 4),
