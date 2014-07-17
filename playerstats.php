@@ -52,6 +52,7 @@ if (!isset($_GET['ID'])) {
              .' ORDER BY LastName, FirstName') ;
 }
 $nTotalGames = 0;
+$nTotalPAs = 0;
 $nTotalAtBats = 0;
 $nTotalRuns = 0;
 $nTotalHits = 0;
@@ -65,12 +66,14 @@ $nTotalErrors = 0;
 $nTotalSBs = 0;
 $nTotalNPs = 0;
 $nTotalSlug = 0;
+$nTotalOBP = 0;
 $nTotalAve = 0;
 ?>
 <table border="0" class="stats small-12">
   <tr valign="top">
     <th>Name</th>
     <th>G</th>
+    <th>PA</th>
     <th>AB</th>
     <th>R</th>
     <th>H</th>
@@ -86,6 +89,7 @@ $nTotalAve = 0;
     <th>NPs*</th>
 <?php } ?>
     <th>Slg%</th>
+    <th>OBP</th>
     <th>Ave.</th>
   </tr>
 <?php
@@ -93,19 +97,19 @@ $i = 0;
 // Reset max stats
 $nRunsMax = $nHitsMax = $nRBIsMax = $nWalksMax = $nStrikeOutsMax = $nHomeRunsMax = $nErrorsMax = $nSBsMax = $nAverageMax = $nDoublesMax = 0;
 $nTriplesMax = $nNPsMax = $nSlugMax = $nRunsMax = $nHitsMax = $nRBIsMax = $nWalksMax = $nStrikeOutsMax = $nHomeRunsMax = $nErrorsMax = 0;
-$nAverageMax = $nDoublesMax = $nTriplesMax = $nNPsMax = $nSlugMax = 0;
+$nAverageMax = $nDoublesMax = $nTriplesMax = $nNPsMax = $nSlugMax = $nOBPMax = 0;
 // Reset max stats ID
 $sRunsMaxID = $sHitsMaxID = $sRBIsMaxID = $sWalksMaxID = $sStrikeOutsMaxID = $sHomeRunsMaxID = $sErrorsMaxID = $sSBsMaxID = $sAverageMaxID = NULL;
 $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = $sRunsMaxID = $sHitsMaxID = $sRBIsMaxID = $sWalksMaxID = $sStrikeOutsMaxID = NULL;
-$sHomeRunsMaxID = $sErrorsMaxID = $sSBsMaxID = $sAverageMaxID = $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = NULL;
+$sHomeRunsMaxID = $sErrorsMaxID = $sSBsMaxID = $sAverageMaxID = $sDoublesMaxID = $sTriplesMaxID = $sNPsMaxID = $sSlugMaxID = $sOBPMaxID = NULL;
 // Calculate Stats for each Player
 while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   $i++;
   $recPlays=$pdo->query('SELECT * FROM plays WHERE PlayerID = '.$rowPlayer['ID'].' AND SeasonID = '.$season_id
             .' ORDER BY GameID, Inning, PlayerID') ;
   // Reset player stats
-  $nAtBats = $nRuns = $nHits = $nRBIs = $nWalks = $nStrikeOuts = $nHomeRuns = $nErrors = $nSBs = $nAverage = $nDoubles = $nTriples = $nNPs = 0;
-  $nSlug = $nGames = 0;
+  $nAtBats = $nPAs = $nRuns = $nHits = $nRBIs = $nWalks = $nStrikeOuts = $nHomeRuns = $nErrors = $nSBs = $nAverage = $nDoubles = $nTriples = $nNPs = 0;
+  $nSlug = $nOBP = $nGames = 0;
   // Reset game number
   $nGameNumber = NULL;
   // Increment stats for each play made
@@ -190,23 +194,34 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
         break;
     }
   }
-  // Calculate Average and Slugging Percentage
+  // Calculate PA
+  $nPAs = $nAtBats + $nWalks;
+  // Calculate Average, OBP and Slugging Percentage
   if ($nHits == 0 || $nAtBats == 0) {
     $sAverage = '.000';
     $sSlug = '0.000';
+    $sOBP = '.000';
   } else {
     $nAverage = $nHits / $nAtBats;
     $nSlug = ($nHits + $nDoubles + ($nTriples * 2) + ($nHomeRuns * 3)) / $nAtBats;
-    // Cleanup Slugging and Average strings
+    $nOBP = ($nHits + $nWalks) / ($nAtBats +$nWalks);
+    // Cleanup Slugging, OBP and Average strings
     $sAverage = substr($nAverage,1,4);
+    $sOBP = substr($nOBP,1,4);
     $sSlug = substr($nSlug,0,5);
     if ($nHits == $nAtBats) {
       $sAverage = '1.000';
+      $sOBP = '1.000';
     }
     if (strlen($sAverage) == 2) {
       $sAverage = $sAverage.'00';
     } elseif (strlen($sAverage) == 3) {
       $sAverage = $sAverage.'0';
+    }
+    if (strlen($sOBP) == 2) {
+      $sOBP = $sOBP.'00';
+    } elseif (strlen($sOBP) == 3) {
+      $sOBP = $sOBP.'0';
     }
     if (strlen($sSlug) == 1) {
       $sSlug = $sSlug.'.000';
@@ -290,6 +305,12 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
     } elseif ($nSlug == $nSlugMax) {
       $sSlugMaxID = NULL;
     }
+    if ($nOBP > $nOBPMax) {
+      $nOBPMax = $nOBP;
+      $sOBPMaxID = $rowPlayer['ID'];
+    } elseif ($nOBP == $nOBPMax) {
+      $sOBPMaxID = NULL;
+    }
     if ($nAverage > $nAverageMax) {
       $nAverageMax = $nAverage;
       $sAverageMaxID = $rowPlayer['ID'];
@@ -301,6 +322,7 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   $StatTemp[$rowPlayer['ID']]['PlayerID'] = $rowPlayer['ID'];
   $StatTemp[$rowPlayer['ID']]['PlayerName'] = $rowPlayer['LastName'].', '.$rowPlayer['FirstName'].' ('.$rowPlayer['ID'].')';
   $StatTemp[$rowPlayer['ID']]['Games'] = $nGames;
+  $StatTemp[$rowPlayer['ID']]['PAs'] = $nPAs;
   $StatTemp[$rowPlayer['ID']]['AtBats'] = $nAtBats;
   $StatTemp[$rowPlayer['ID']]['Runs'] = $nRuns;
   $StatTemp[$rowPlayer['ID']]['Hits'] = $nHits;
@@ -314,12 +336,14 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   $StatTemp[$rowPlayer['ID']]['SBs'] = $nSBs;
   $StatTemp[$rowPlayer['ID']]['NPs'] = $nNPs;
   $StatTemp[$rowPlayer['ID']]['Slug'] = $sSlug;
+  $StatTemp[$rowPlayer['ID']]['OBP'] = $sOBP;
   $StatTemp[$rowPlayer['ID']]['Average'] = $sAverage;
   if (!isset($_GET['ID'])) {
     if ($nGames > $nTotalGames) {
       $nTotalGames = $nGames;
     }
     $nTotalAtBats = $nTotalAtBats + $nAtBats;
+    $nTotalPAs = $nTotalPAs + $nPAs;
     $nTotalRuns = $nTotalRuns + $nRuns;
     $nTotalHits = $nTotalHits + $nHits;
     $nTotalDoubles = $nTotalDoubles + $nDoubles;
@@ -332,6 +356,7 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
     $nTotalSBs = $nTotalSBs + $nSBs;
     $nTotalNPs = $nTotalNPs + $nNPs;
     $nTotalSlug = $nTotalSlug + $nSlug;
+    $nTotalOBP = $nTotalOBP + $nOBP;
     $nTotalAve = $nTotalAve + $nAverage;
   }
 }
@@ -350,6 +375,7 @@ if (isset($StatTemp)) {
     <td valign="top"> <a href="playerbios.php?ID=<?php echo $tmp['PlayerID']?>"><?php echo
     stripslashes($tmp['PlayerName'])?></a> </td>
     <td valign="top"> <?php echo $tmp['Games']?> </td>
+    <td valign="top"> <?php echo $tmp['PAs']?> </td>
     <td valign="top"> <?php echo $tmp['AtBats']?> </td>
     <?php if ($tmp['PlayerID'] == $sRunsMaxID) { ?>
       <td valign="top" class="topstats"><?php echo $tmp['Runs']?> </td>
@@ -413,6 +439,11 @@ if (isset($StatTemp)) {
     <?php } else { ?>
       <td valign="top"> <?php echo $tmp['Slug']?> </td>
     <?php } ?>
+    <?php if ($tmp['PlayerID'] == $sOBPMaxID) { ?>
+      <td valign="top" class="topstats"><?php echo $tmp['OBP']?> </td>
+    <?php } else { ?>
+      <td valign="top"> <?php echo $tmp['OBP']?> </td>
+    <?php } ?>
     <?php if ($tmp['PlayerID'] == $sAverageMaxID) { ?>
       <td valign="top" class="topstats"><?php echo $tmp['Average']?> </td>
     <?php } else { ?>
@@ -427,6 +458,7 @@ if (!isset($_GET['ID'])) {
  <tr valign="top">
    <td valign="top"><hr><strong>Totals:</strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalGames?></strong></td>
+   <td valign="top"><hr><strong><?php echo $nTotalPAs?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalAtBats?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalRuns?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalHits?></strong></td>
@@ -443,6 +475,8 @@ if (!isset($_GET['ID'])) {
   <?php } ?>
    <td valign="top"><hr><strong>
    <?php if ($i <> 0) { echo substr(($nTotalSlug / $i),0,5); } else { echo '0'; } ?></strong></td>
+   <td valign="top"><hr><strong>
+   <?php if ($i <> 0) { echo substr(($nTotalOBP / $i),1,4); } else { echo '0'; } ?></strong></td>
    <td valign="top"><hr><strong>
    <?php if ($i <> 0) { echo substr(($nTotalAve / $i),1,4); } else { echo '0'; } ?></strong></td>
  </tr>
