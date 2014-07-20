@@ -76,6 +76,7 @@ if ($recGame) {
 }
 ?>
 </select>
+</form>
 <?php
 if (!isset($game_id) || $game_id == '') {
   require('./config/footer.php');
@@ -99,11 +100,7 @@ $i = 1;
 $last_inning = '';
 $last_player = '';
 
-
 while($rowPlays=$recPlays->fetch(PDO::FETCH_ASSOC)) {
-  print("<!--");
-  print_r($rowPlays);
-  print("-->");
   
   $recPlayer = $pdo->query('SELECT * FROM player WHERE ID = '.$rowPlays['PlayerID'].' AND SeasonID = '.$season_id);
   $rowPlayer = $recPlayer->fetch(PDO::FETCH_ASSOC);
@@ -142,7 +139,139 @@ while($rowPlays=$recPlays->fetch(PDO::FETCH_ASSOC)) {
 }
 ?>
 </table>
-</form>
+
+<?php 
+// Game Box Would like to get 
+// AB   R     H    2B  3B  HR  BB   K    RBI 
+// for each player
+$boxPlays=$pdo->query('SELECT PlayerID, TypeID FROM plays WHERE GameID = '.$game_id.' AND SeasonID = '.$season_id.' ORDER BY PlayerID' );
+$thisPlayer = 0;
+$StatTemp = [];
+
+while($bPlays=$boxPlays->fetch(PDO::FETCH_ASSOC)) {
+
+  // is this the same player as the one before?
+  if($bPlays['PlayerID']>$thisPlayer)  {
+    // not the same player, increase the player id untill it is the same, and construct the stat object
+    while($bPlays['PlayerID']>$thisPlayer) {
+      $thisPlayer++;
+    }
+    //print("New player id is ".$thisPlayer);
+    //Look up this player
+    $recPlayer = $pdo->query('SELECT * FROM player WHERE ID = '.$thisPlayer.' AND SeasonID = '.$season_id);
+    $rowPlayer = $recPlayer->fetch(PDO::FETCH_ASSOC);
+    $playerName = $rowPlayer['LastName'].', '.$rowPlayer['FirstName'].' ('.$rowPlayer['ID'].')';
+    $StatTemp[$bPlays['PlayerID']] = [
+      "NAME" => $playerName,
+      "AB" => 0,
+      "R" => 0,
+      "H" => 0,
+      "2B" => 0,
+      "3B" => 0,
+      "HR" => 0,
+      "BB" => 0,
+      "K" => 0,
+      "RBI" => 0
+    ]; }
+
+
+    //echo('NOW What is this player?: '.$thisPlayer.'<br>');
+
+    //NOW RECORD STATS
+    // echo('Player is '.$bPlays['PlayerID'].' compared to '.$thisPlayer.' and play type was '.$bPlays['TypeID'].'<br>');
+  switch ($bPlays['TypeID']) {
+    case 1: //single
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      $StatTemp[$bPlays['PlayerID']]['H']++;
+      break;      
+    case 2: //double
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      $StatTemp[$bPlays['PlayerID']]['H']++;
+      $StatTemp[$bPlays['PlayerID']]['2B']++;
+      break;
+    case 3: //triple
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      $StatTemp[$bPlays['PlayerID']]['H']++;
+      $StatTemp[$bPlays['PlayerID']]['3B']++;
+      break;
+    case 4: // home run
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      $StatTemp[$bPlays['PlayerID']]['H']++;
+      $StatTemp[$bPlays['PlayerID']]['HR']++;
+      break;
+    case 5: //RBI
+      $StatTemp[$bPlays['PlayerID']]['RBI']++;
+      //echo('RBI<br>');
+      break;
+    case 6: // foul out
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      break;
+    case 7: // strikeout
+      $StatTemp[$bPlays['PlayerID']]['K']++;
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      break;
+    case 8: // ground out
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      break;
+    case 9: // double play
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      break;
+    case 10 : // FC
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      break;
+    case 22 : // reached on error
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      break;
+    case 21:
+      $StatTemp[$bPlays['PlayerID']]['BB']++;
+      break;
+    case 24:
+      $StatTemp[$bPlays['PlayerID']]['R']++;
+      break;
+    case 26: // fly out
+      $StatTemp[$bPlays['PlayerID']]['AB']++;
+      break;
+    case 27: //stolen base
+      break;
+    case 29: //HBP
+      $StatTemp[$bPlays['PlayerID']]['BB']++;
+      break;
+  }
+  
+}
+  
+//print_r($StatTemp);
+?>
+<h4>Game Box Score</h4>
+
+<table>
+  <tr><th>PLAYER</th><th>AB</th><th>R</th><th>H</th><th>2B</th><th>3B</th><th>HR</th><th>BB</th><th>K</th><th>RBI</th></tr>
+<?php 
+// print the table from constructed object
+foreach ($StatTemp as $player) {
+
+  if(!$player["AB"]==0 || !$player["BB"]==0) {
+
+    ?><tr><td><?php echo $player["NAME"]; ?></td>
+    <td><?php echo $player["AB"]; ?></td>
+    <td><?php echo $player["R"]; ?></td>
+    <td><?php echo $player["H"]; ?></td>
+    <td><?php echo $player["2B"]; ?></td>
+    <td><?php echo $player["3B"]; ?></td>
+    <td><?php echo $player["HR"]; ?></td>
+    <td><?php echo $player["BB"]; ?></td>
+    <td><?php echo $player["K"]; ?></td>
+    <td><?php echo $player["RBI"]; ?></td></tr><?php
+
+  }
+
+}
+
+
+?>
+
+</table>  
+
 <?php
 require('./config/footer.php');
 ?>
