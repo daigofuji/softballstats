@@ -23,7 +23,7 @@ if (!isset($_POST['cboGame'])) {
 require('./config/header.php');
 if (isset($_GET['ID'])) { 
   if (!is_numeric($_GET['ID'])) { 
-    print('<font face="Arial" size="+2"><strong>Invalid ID number!</strong></font>');
+    print('<strong>Invalid ID number!</strong>');
     require('./config/footer.php'); 
     exit; 
   } 
@@ -82,11 +82,11 @@ if (!isset($game_id) || $game_id == '') {
   exit;
 }
 $recPlays=$pdo->query('SELECT * FROM plays WHERE GameID = '.$game_id.' AND SeasonID = '.$season_id.' ORDER BY Inning, DateAdded' );
-if ($recPlays->fetchColumn() == 0) {
-  echo "<h2>There are no plays for this game yet</h2>";
-  require('./config/footer.php');
-  exit;
-}
+// if ($recPlays->fetchColumn() == 0) {
+//   echo "<h2>There are no plays for this game yet</h2>";
+//   require('./config/footer.php');
+//   exit;
+// }
 ?>
 <table border="0" class="small-12">
   <tr valign="top">
@@ -98,7 +98,13 @@ if ($recPlays->fetchColumn() == 0) {
 $i = 1;
 $last_inning = '';
 $last_player = '';
+
+
 while($rowPlays=$recPlays->fetch(PDO::FETCH_ASSOC)) {
+  print("<!--");
+  print_r($rowPlays);
+  print("-->");
+  
   $recPlayer = $pdo->query('SELECT * FROM player WHERE ID = '.$rowPlays['PlayerID'].' AND SeasonID = '.$season_id);
   $rowPlayer = $recPlayer->fetch(PDO::FETCH_ASSOC);
   $recPlayType = $pdo->query('SELECT * FROM type WHERE ID = '.$rowPlays['TypeID']);
