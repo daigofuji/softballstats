@@ -83,7 +83,7 @@ $nTotalAve = 0;
     <th>RBI </th>
     <th>BB/HBP</th>
     <th>K</th>
-    <th>Er</th>
+    <!-- <th>Er</th> -->
     <th>SB</th>
 <?php if ($show_np) { ?>
     <th>NPs*</th>
@@ -413,14 +413,14 @@ if (isset($StatTemp)) {
       <td valign="top"> <?php echo $tmp['Walks']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sStrikeOutsMaxID) { ?>
-      <td valign="top" class="topstats"><?php echo $tmp['StrikeOuts']?> </td>
+      <td valign="top" class=""><?php echo $tmp['StrikeOuts']?> </td>
     <?php } else { ?>
       <td valign="top"> <?php echo $tmp['StrikeOuts']?> </td>
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sErrorsMaxID) { ?>
-      <td valign="top" class="topstats"><?php echo $tmp['Errors']?> </td>
+      <!-- <td valign="top" class="topstats"><?php echo $tmp['Errors']?> </td> -->
     <?php } else { ?>
-      <td valign="top"> <?php echo $tmp['Errors']?> </td>
+      <!-- <td valign="top"> <?php echo $tmp['Errors']?> </td> -->
     <?php } ?>
     <?php if ($tmp['PlayerID'] == $sSBsMaxID) { ?>
       <td valign="top" class="topstats"><?php echo $tmp['SBs']?> </td>
@@ -468,7 +468,7 @@ if (!isset($_GET['ID'])) {
    <td valign="top"><hr><strong><?php echo $nTotalRBIs?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalWalks?></strong></td>
    <td valign="top"><hr><strong><?php echo $nTotalStrikeOuts?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalErrors?></strong></td>
+   <!-- <td valign="top"><hr><strong><?php echo $nTotalErrors?></strong></td> -->
    <td valign="top"><hr><strong><?php echo $nTotalSBs?></strong></td>
   <?php if ($show_np) { ?>
    <td valign="top"><hr><strong><?php echo $nTotalNPs?></strong></td>
