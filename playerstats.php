@@ -197,14 +197,14 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
   // Calculate PA
   $nPAs = $nAtBats + $nWalks;
   // Calculate Average, OBP and Slugging Percentage
-  if ($nHits == 0 || $nAtBats == 0) {
+  if (($nHits == 0 && $nWalks ==0) || $nPAs == 0 ) {
     $sAverage = '.000';
     $sSlug = '0.000';
     $sOBP = '.000';
   } else {
     $nAverage = $nHits / $nAtBats;
     $nSlug = ($nHits + $nDoubles + ($nTriples * 2) + ($nHomeRuns * 3)) / $nAtBats;
-    $nOBP = ($nHits + $nWalks) / ($nAtBats +$nWalks);
+    $nOBP = ($nHits + $nWalks) / ($nAtBats + $nWalks);
     // Cleanup Slugging, OBP and Average strings
     $sAverage = substr($nAverage,1,4);
     $sOBP = substr($nOBP,1,4);
@@ -217,6 +217,8 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
       $sAverage = $sAverage.'00';
     } elseif (strlen($sAverage) == 3) {
       $sAverage = $sAverage.'0';
+    } elseif ($sAverage == '') {
+      $sAverage = '.000';
     }
     if (strlen($sOBP) == 2) {
       $sOBP = $sOBP.'00';
