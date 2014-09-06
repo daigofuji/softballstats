@@ -70,8 +70,9 @@ $nTotalOBP = 0;
 $nTotalAve = 0;
 ?>
 <table border="0" class="stats small-12">
+  <thead>
   <tr valign="top">
-    <th>Name</th>
+    <th>Player Name</th>
     <th>G</th>
     <th>PA</th>
     <th>AB</th>
@@ -81,7 +82,7 @@ $nTotalAve = 0;
     <th>3B</th>
     <th>HR</th>
     <th>RBI </th>
-    <th>BB/HBP</th>
+    <th>BB/<br>HBP</th>
     <th>K</th>
     <!-- <th>Er</th> -->
     <th>SB</th>
@@ -92,6 +93,8 @@ $nTotalAve = 0;
     <th>OBP</th>
     <th>Ave.</th>
   </tr>
+  </thead>
+  <tbody>
 <?php
 $i = 0;
 // Reset max stats
@@ -456,35 +459,36 @@ if (isset($StatTemp)) {
   }
 }
 if (!isset($_GET['ID'])) {
-?>
+?></tbody>
  <tr valign="top">
-   <td valign="top"><hr><strong>Totals:</strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalGames?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalPAs?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalAtBats?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalRuns?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalHits?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalDoubles?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalTriples?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalHomeRuns?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalRBIs?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalWalks?></strong></td>
-   <td valign="top"><hr><strong><?php echo $nTotalStrikeOuts?></strong></td>
-   <!-- <td valign="top"><hr><strong><?php echo $nTotalErrors?></strong></td> -->
-   <td valign="top"><hr><strong><?php echo $nTotalSBs?></strong></td>
+   <td valign="top"><strong>Totals:</strong></td>
+   <td valign="top"><strong><?php echo $nTotalGames?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalPAs?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalAtBats?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalRuns?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalHits?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalDoubles?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalTriples?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalHomeRuns?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalRBIs?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalWalks?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalStrikeOuts?></strong></td>
+   <!-- <td valign="top"><strong><?php echo $nTotalErrors?></strong></td> -->
+   <td valign="top"><strong><?php echo $nTotalSBs?></strong></td>
   <?php if ($show_np) { ?>
-   <td valign="top"><hr><strong><?php echo $nTotalNPs?></strong></td>
+   <td valign="top"><strong><?php echo $nTotalNPs?></strong></td>
   <?php } ?>
-   <td valign="top"><hr><strong>
+   <td valign="top"><strong>
    <?php if ($i <> 0) { echo substr(($nTotalSlug / $i),0,5); } else { echo '0'; } ?></strong></td>
-   <td valign="top"><hr><strong>
+   <td valign="top"><strong>
    <?php if ($i <> 0) { echo substr(($nTotalOBP / $i),1,4); } else { echo '0'; } ?></strong></td>
-   <td valign="top"><hr><strong>
+   <td valign="top"><strong>
    <?php if ($i <> 0) { echo substr(($nTotalAve / $i),1,4); } else { echo '0'; } ?></strong></td>
  </tr>
 <?php
 }
 ?>
+
 </table>
 <p>
 <?php if ($show_np) { ?>

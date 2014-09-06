@@ -23,13 +23,19 @@ if ($demo_mode <> '0') {
 <!-- Javascript -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/foundation/5.2.3/js/foundation.min.js"></script>
+<script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/725b2a2115b/integration/foundation/dataTables.foundation.js"></script>
+
 <script>
 
 
 $(document).foundation().ready(function(){
 	"use strict";
 
-
+	$('.stats').dataTable( {
+		"paging": false,
+		"searching": false
+	});
 
 });
 

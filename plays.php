@@ -244,8 +244,11 @@ while($bPlays=$boxPlays->fetch(PDO::FETCH_ASSOC)) {
 ?>
 <h4>Game Box Score</h4>
 
-<table>
-  <tr><th>PLAYER</th><th>AB</th><th>R</th><th>H</th><th>2B</th><th>3B</th><th>HR</th><th>BB</th><th>K</th><th>RBI</th></tr>
+<table class="stats">
+  <thead>
+    <tr><th>PLAYER</th><th>AB</th><th>R</th><th>H</th><th>2B</th><th>3B</th><th>HR</th><th>BB</th><th>K</th><th>RBI</th></tr>
+  </thead>
+  <tbody>
 <?php 
 // print the table from constructed object
 foreach ($StatTemp as $player) {
@@ -269,7 +272,7 @@ foreach ($StatTemp as $player) {
 
 
 ?>
-
+  </tbody>
 </table>  
 
 <?php

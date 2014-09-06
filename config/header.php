@@ -5,7 +5,9 @@
 	<title><?php echo $TITLE; ?></title>
 	<link rel="shortcut icon" href="<?php echo $stat_dir?>/img/softball.ico" type="image/x-icon" />
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/foundation/5.2.3/css/foundation.min.css">
-	<link rel="stylesheet" href="<?php echo $stat_dir?>/css/softballstats.css" type="text/css" />
+  <link rel="stylesheet" href="//cdn.datatables.net/1.10.2/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/725b2a2115b/integration/foundation/dataTables.foundation.css">
+  <link rel="stylesheet" href="<?php echo $stat_dir?>/css/softballstats.css" type="text/css" />
 
 </head>
 
