@@ -8,7 +8,7 @@ if (isset($_POST['cboSeason']) && $_POST['cboSeason'] <> '' && is_numeric($_POST
 $arr = seasoninfo($id);
 $season_id = $arr['0'];
 $season_name = $arr['1'];
-$TITLE=$team_name.' Softball Schedule - '.$season_name;
+$TITLE=$team_name.' Schedule - '.$season_name;
 require('./config/header.php');
 ?>
 

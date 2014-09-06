@@ -1,6 +1,6 @@
 <?php
 require('../config/config.php');
-$TITLE=$team_name.' Softball Season Admin Page';
+$TITLE=$team_name.' Season Admin Page';
 if ((isset($_POST['cboSeasonU']) && $_POST['cboSeasonU'] <> '') && !isset($_POST['Update']) && !isset($_POST['Add'])&& !isset($_POST['Delete'])) {
   $BODY_CODE='onLoad="document.season.cboSeasonU.focus();"';
 } else {

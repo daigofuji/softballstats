@@ -1,6 +1,6 @@
 <?php
 require('../config/config.php');
-$TITLE=$team_name." Softball Admin Pages";
+$TITLE=$team_name." Admin Pages";
 
 if (!isset($HTTP_SERVER_VARS['PHP_AUTH_PW']) || !isset($HTTP_SERVER_VARS['PHP_AUTH_USER']) || $HTTP_SERVER_VARS['PHP_AUTH_PW'] <> $admin_pass || strtoupper($HTTP_SERVER_VARS['PHP_AUTH_USER']) <> strtoupper($admin_user)) {
  authorize();
