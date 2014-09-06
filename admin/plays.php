@@ -30,7 +30,7 @@ require('../config/header.php');
 opendb();
 if (isset($_POST['cboSeason']) && $_POST['cboSeason'] <> '') {
   $recGame = $pdo->query('SELECT * FROM game WHERE SeasonID = '.addslashes($_POST['cboSeason']).' ORDER BY GameDate') ;
-  $recPlayer = $pdo->query('SELECT * FROM player WHERE SeasonID = '.addslashes($_POST['cboSeason']).' ORDER BY LastName, FirstName') ;
+  $recPlayer = $pdo->query('SELECT * FROM player WHERE SeasonID = '.addslashes($_POST['cboSeason']).' ORDER BY FirstName, LastName') ;
 }
 $recPlayType = $pdo->query('SELECT * FROM type ORDER BY Description') ;
 $recSeason = $pdo->query('SELECT * FROM season ORDER BY ID') ;
@@ -156,8 +156,7 @@ if ($recPlayer) {
       print "          <option";
     }
 ?>
- VALUE="<?php echo $rowPlayer['ID']?>"><?php echo stripslashes($rowPlayer['LastName'])?>, <?php echo stripslashes($rowPlayer['FirstName'])
- ?> (<?php echo $rowPlayer['ID']?>)</option>
+ VALUE="<?php echo $rowPlayer['ID']?>"><?php echo stripslashes($rowPlayer['FirstName'])?> <?php echo stripslashes($rowPlayer['LastName'])?> (<?php echo $rowPlayer['ID']?>)</option>
 <?php
   }
 }
