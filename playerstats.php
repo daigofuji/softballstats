@@ -205,16 +205,26 @@ while ($rowPlayer=$recPlayer->fetch(PDO::FETCH_ASSOC)) {
     $sSlug = '0.000';
     $sOBP = '.000';
   } else {
-    $nAverage = $nHits / $nAtBats;
-    $nSlug = ($nHits + $nDoubles + ($nTriples * 2) + ($nHomeRuns * 3)) / $nAtBats;
+    if ($nAtBats == 0) {
+      $sAverage = '.000';
+      $sSlug = '0.000';
+    } else {
+      $nAverage = $nHits / $nAtBats;
+      $nSlug = ($nHits + $nDoubles + ($nTriples * 2) + ($nHomeRuns * 3)) / $nAtBats;
+    }
     $nOBP = ($nHits + $nWalks) / ($nAtBats + $nWalks);
     // Cleanup Slugging, OBP and Average strings
     $sAverage = substr($nAverage,1,4);
     $sOBP = substr($nOBP,1,4);
     $sSlug = substr($nSlug,0,5);
     if ($nHits == $nAtBats) {
-      $sAverage = '1.000';
-      $sOBP = '1.000';
+      if ($nAtBats > 0) {
+        $sAverage = '1.000';
+        $sOBP = '1.000';
+      } else {
+        $sAverage = '.000';
+        $sOBP = '1.000';        
+      }
     }
     if (strlen($sAverage) == 2) {
       $sAverage = $sAverage.'00';
